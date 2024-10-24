@@ -13,7 +13,7 @@
     />
     <InputImage v-else-if="type === 'image'"
         v-model="value"
-        label="''"
+        label=""
         @change="change"
     />
     <InputColor v-else-if="type === 'color'"

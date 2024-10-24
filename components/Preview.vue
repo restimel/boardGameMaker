@@ -1,6 +1,6 @@
 <template>
     <div v-if="props.material.type === 'Cards'">
-        <InputRadio
+        <InputRadio v-if="!props.readonly"
             :values="[{
                 label: 'Front',
                 value: 'front',
@@ -22,6 +22,7 @@
 type Props = {
     material: Material;
     content: MaterialContent | null;
+    readonly?: boolean;
 };
 
 const props = defineProps<Props>();

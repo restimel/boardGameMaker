@@ -1,8 +1,10 @@
 import { computed, ref, watch } from 'vue';
 import nuxtStorage from 'nuxt-storage';
 
-const states = {
+const states: ProjectStates = {
     title: ref<string>('The project'),
+    author: ref<string>(''),
+
     concept: ref<string>(''),
     setup: ref<string>(''),
     rules: ref<string>(''),
@@ -18,8 +20,6 @@ const states = {
 
     materials: ref<Material[]>([]),
 };
-
-type StatesKey = keyof typeof states;
 
 watch(() => states, () => {
     const JSONState = Array.from(Object.entries(states)).reduce((jsStates, [key, value]) => {
@@ -77,7 +77,6 @@ export default function() {
         return text;
     });
 
-    states.materials;
 
     return {
         ...states,

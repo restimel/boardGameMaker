@@ -77,7 +77,6 @@ const imageAlign = computed(() => {
 
 const type = computed(() => {
     const contentType = detail.value.content.type;
-    console.log('type:', contentType)
 
     if (contentType === 'StaticText') {
         return 'Text';

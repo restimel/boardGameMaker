@@ -88,3 +88,29 @@ type MaterialDice = MaterialBase & {
 };
 
 type Material = MaterialCard | MaterialDice;
+
+type Project = {
+    title: string;
+    author: string;
+
+    concept: string;
+    setup: string;
+    rules: string;
+    endOfGame: string;
+    score: string;
+
+    playerMin: number;
+    playerMax: number;
+    playerBest: number;
+    playerOptions: string;
+
+    /** minutes */
+    duration: number;
+
+    materials: Material[];
+};
+
+type StatesKey = keyof Project;
+type ProjectStates = {
+    [Key in StatesKey]: Ref<Project[Key]>;
+};

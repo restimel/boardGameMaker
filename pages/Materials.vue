@@ -22,6 +22,7 @@
             <tbody>
                 <tr v-for="material of project.materials.value"
                     :key="`material-${material.name}`"
+                    @click="navigateTo(`material/${material.name}/contents`)"
                 >
                     <td>
                         {{ material.name }}
@@ -33,10 +34,10 @@
                         {{ material.contents.length }}
                     </td>
                     <td class="cell-actions">
-                        <button @click="navigateTo(`/material/${material.name}/configuration`)">
+                        <button @click.stop="navigateTo(`/material/${material.name}/configuration`)">
                             ✎
                         </button>
-                        <button @click="removeItem(material.name)">
+                        <button @click.stop="removeItem(material.name)">
                             ✕
                         </button>
                     </td>

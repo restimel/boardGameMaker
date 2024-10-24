@@ -6,6 +6,10 @@
             Title:
             <input v-model="project.title.value" >
         </label>
+        <label>
+            Author:
+            <input v-model="project.author.value" >
+        </label>
 
         <h2>Players</h2>
         <label>
