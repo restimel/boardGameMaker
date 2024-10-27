@@ -3,6 +3,9 @@ type MaterialType = 'Cards' | 'Dice';
 type MaterialPart = 'Box' | 'Image';
 type DescriptionType = 'text' | 'number' | 'image' | 'color';
 
+/** [major, minor, variation] */
+type Version = [number, number, number];
+
 /** [x, y] in mm */
 type Dimension = [number, number];
 
@@ -89,9 +92,17 @@ type MaterialDice = MaterialBase & {
 
 type Material = MaterialCard | MaterialDice;
 
+type Alias = {
+    id: string;
+    alias: string;
+    value: string;
+    image: string;
+};
+
 type Project = {
     title: string;
     author: string;
+    version: Version;
 
     concept: string;
     setup: string;
@@ -108,6 +119,8 @@ type Project = {
     duration: number;
 
     materials: Material[];
+
+    alias: Record<string, Alias>;
 };
 
 type StatesKey = keyof Project;

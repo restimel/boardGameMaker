@@ -2,10 +2,11 @@
     <section>
         <header>
             <nav>
+                <NuxtLink to="/project">Project</NuxtLink>
                 <NuxtLink to="/summary">Overview</NuxtLink>
                 <NuxtLink to="/rules">Rules</NuxtLink>
                 <NuxtLink to="/materials">Materials</NuxtLink>
-                <NuxtLink to="/project">Project</NuxtLink>
+                <NuxtLink to="/alias">Alias & Enumeration</NuxtLink>
             </nav>
         </header>
         <main class="page">

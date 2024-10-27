@@ -13,6 +13,7 @@
 
         --bg-color: #fffffe;
         --text-color: #000000;
+        --text-disabled-color: #606060;
         --button-bg-color: #eeeee0;
 
         --error-bg-color: #cb5a5a;
@@ -76,6 +77,9 @@
     /* {{{ common components */
 
     .inline-text {
+        display: inline;
+    }
+    .inline-text > p {
         display: inline;
     }
 

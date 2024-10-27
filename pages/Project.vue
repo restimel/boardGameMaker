@@ -2,14 +2,16 @@
     <div>
         <h1>Project</h1>
 
-        <label>
-            Title:
-            <input v-model="project.title.value" >
-        </label>
-        <label>
-            Author:
-            <input v-model="project.author.value" >
-        </label>
+        <section class="form">
+            <label>
+                Title:
+                <input v-model="project.title.value" >
+            </label>
+            <label>
+                Author:
+                <input v-model="project.author.value" >
+            </label>
+        </section>
 
         <h2>Players</h2>
         <label>

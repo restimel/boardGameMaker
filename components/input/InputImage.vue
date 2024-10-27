@@ -6,7 +6,11 @@
                 type="text"
                 v-model="image"
                 placeholder="url"
+                :readonly="image.length > maxLength"
             >
+            <button @click="image = ''">
+                ×
+            </button>
             <br>
             <input type="file" @change="onFileChange" accept="image/*" />
         </div>
@@ -28,6 +32,7 @@ const emit = defineEmits<{
     (e: 'change', value: ContentValue): void;
 }>();
 const image = ref<string>(imageModel.value?.toString(10) ?? '');
+const maxLength = 10_000;
 
 const label = computed<string>(() => {
     const propLabel = props.label;
@@ -52,22 +57,44 @@ watch(image, () => {
     change();
 });
 
+const maxSize = 500 * 1024;
 function onFileChange(event: InputEvent) {
-    const file = event.currentTarget!.files?.[0];
+    const element = event.currentTarget as HTMLInputElement;
+    const file = element.files?.[0];
 
-    if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = () => {
-            image.value = reader.result as string;
-        };
-
-        reader.onerror = (error) => {
-            console.error('Error reading file:', error);
-        };
+    if (!file) {
+        image.value = '';
+        element.setCustomValidity('');
+        return;
     }
+
+    if (file.size > maxSize) {
+        element.value = '';
+        element.setCustomValidity(`File is too big.\nThe maximum file size is ${maxSize / 1024}kib`);
+        element.reportValidity();
+        return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+        element.value = '';
+        element.setCustomValidity('File should be an image');
+        element.reportValidity();
+        return;
+    }
+
+    element.setCustomValidity('');
+
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+        image.value = reader.result as string;
+    };
+
+    reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+    };
 }
 
 function change() {
@@ -80,6 +107,10 @@ function change() {
     grid-template-columns: min-content 1fr min-content;
     align-items: center;
     gap: 5px;
+}
+
+.input-image.inline-text {
+    display: inline-grid;
 }
 
 .preview {

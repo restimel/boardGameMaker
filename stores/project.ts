@@ -4,6 +4,7 @@ import nuxtStorage from 'nuxt-storage';
 const states: ProjectStates = {
     title: ref<string>('The project'),
     author: ref<string>(''),
+    version: ref<Version>([0, 0, 1]),
 
     concept: ref<string>(''),
     setup: ref<string>(''),
@@ -19,6 +20,8 @@ const states: ProjectStates = {
     duration: ref<number>(42),
 
     materials: ref<Material[]>([]),
+
+    alias: ref<Record<string, Alias>>({}),
 };
 
 watch(() => states, () => {
