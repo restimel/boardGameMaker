@@ -16,8 +16,8 @@
         --text-disabled-color: #606060;
         --button-bg-color: #eeeee0;
 
-        --error-bg-color: #cb5a5a;
-        --error-color: #ffeeee;
+        --error-bg-color: #fff5f5;
+        --error-color: #c92a2a;
 
         --table-border: #dddddd;
         --table-header-bg: #f0f0f0;

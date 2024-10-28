@@ -1,11 +1,13 @@
 <template>
-    <VueMarkdownRender
-        :class="componentKey"
-        :key="componentKey"
-        :source="text"
-        :options="options"
-        :plugins="plugins"
-    />
+    <Error>
+        <VueMarkdownRender
+            :class="componentKey"
+            :key="componentKey"
+            :source="text"
+            :options="options"
+            :plugins="plugins"
+        />
+    </Error>
 </template>
 <script setup lang="ts">
 
@@ -14,6 +16,7 @@ import { full as MarkdownEmoji } from 'markdown-it-emoji';
 import MarkdownSub from 'markdown-it-sub';
 import MarkdownSup from 'markdown-it-sup';
 import MarkdownTasks from 'markdown-it-task-lists';
+import MarkdownFootnote from 'markdown-it-footnote';
 import { computed } from 'vue';
 import projectStore from '~/stores/project';
 
@@ -32,6 +35,7 @@ const props = defineProps<Props>();
 const project = projectStore();
 
 const componentKey = ref<string>(getUid('Text-'));
+const error = ref<string>('');
 
 const text = computed(() => {
     const value = props.value;
@@ -46,7 +50,7 @@ const options = {
     breaks: true,
     linkify: false,
     typographer: true,
-    quotes: true,
+    quotes: '“”‘’', /* ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for french */
 };
 
 const enclosedChars = {
@@ -148,7 +152,7 @@ const emoji = computed(() => {
         defs: {
             ...enclosedChars,
             ...aliases.value,
-        }
+        },
     });
 
     return plugin;
@@ -161,6 +165,7 @@ const plugins = computed(() => [
     MarkdownSub,
     MarkdownSup,
     MarkdownTasks,
+    MarkdownFootnote,
 ]);
 
 watch(aliases, () => {
@@ -199,5 +204,15 @@ function restartMarkdown() {
 .alias-icon {
     height: 1em;
     display: inline-block;
+}
+
+pre {
+    background-color: #f0f0f0;
+    padding: 5px;
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    color: #505550;
 }
 </style>

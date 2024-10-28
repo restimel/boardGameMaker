@@ -7,6 +7,7 @@
                 <NuxtLink to="/rules">Rules</NuxtLink>
                 <NuxtLink to="/materials">Materials</NuxtLink>
                 <NuxtLink to="/alias">Alias & Enumeration</NuxtLink>
+                <NuxtLink to="/help">❔</NuxtLink>
             </nav>
         </header>
         <main class="page">
