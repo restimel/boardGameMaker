@@ -17,6 +17,11 @@ import MarkdownTasks from 'markdown-it-task-lists';
 import { computed } from 'vue';
 import projectStore from '~/stores/project';
 
+type MarkdownIt = any;
+type MDContent = {
+    content: string;
+};
+
 type Props = {
     value?: string;
     material?: Material;
@@ -152,6 +157,7 @@ const emoji = computed(() => {
 const plugins = computed(() => [
     MarkdownEmoji,
     emoji.value,
+    refValuePlugin,
     MarkdownSub,
     MarkdownSup,
     MarkdownTasks,
@@ -160,6 +166,24 @@ const plugins = computed(() => [
 watch(aliases, () => {
     restartMarkdown();
 });
+
+function refValuePlugin(md: MarkdownIt) {
+    /* Regular expression to match `:ref<value>:` */
+    const refPattern = /:ref<([^>]+)>:/g;
+
+    md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
+        let patternContent = tokens[idx].content;
+
+        patternContent = patternContent.replace(refPattern, (_pattern, value) => {
+            const ref = props.material?.description[value];
+            const content = props.content;
+
+            return getRefValue(ref, content);
+        });
+
+        return md.utils.escapeHtml(patternContent);
+    };
+}
 
 let timer = 0;
 function restartMarkdown() {
