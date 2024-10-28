@@ -39,8 +39,6 @@ import projectStore from '~/stores/project';
 
 const project = projectStore();
 
-console.log(project);
-
 </script>
 <style scoped>
 

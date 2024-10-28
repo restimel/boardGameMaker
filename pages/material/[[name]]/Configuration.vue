@@ -70,11 +70,9 @@
                             >
                         </td>
                         <td>
-                            <select v-model="attribute.type">
-                                <option value="text">Text</option>
-                                <option value="number">Number value</option>
-                                <option value="image">Image</option>
-                            </select>
+                            <InputTypeSelector
+                                v-model="attribute.type"
+                            />
                         </td>
                         <td>
                             <input type="text" v-model="attribute.defaultValue" placeholder="">
@@ -100,11 +98,7 @@
                             >
                         </td>
                         <td>
-                            <select disabled>
-                                <option value="text">Text</option>
-                                <option value="number">Number value</option>
-                                <option value="image">Image</option>
-                            </select>
+                            <InputTypeSelector disabled />
                         </td>
                         <td>
                         </td>

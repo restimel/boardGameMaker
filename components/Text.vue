@@ -148,7 +148,7 @@ const aliases = computed(() => {
 });
 
 const emoji = computed(() => {
-    const plugin = (instance) => instance.use(MarkdownEmoji, {
+    const plugin = (instance: any) => instance.use(MarkdownEmoji, {
         defs: {
             ...enclosedChars,
             ...aliases.value,
@@ -162,6 +162,7 @@ const plugins = computed(() => [
     MarkdownEmoji,
     emoji.value,
     refValuePlugin,
+    enumValuePlugin,
     MarkdownSub,
     MarkdownSup,
     MarkdownTasks,
@@ -172,19 +173,56 @@ watch(aliases, () => {
     restartMarkdown();
 });
 
-function refValuePlugin(md: MarkdownIt) {
-    /* Regular expression to match `:ref<value>:` */
-    const refPattern = /:ref<([^>]+)>:/g;
+/* Regular expression to match `:ref<value>:` */
+const refPattern = /:ref<([^:]+)>:/gi;
+function replaceRef(value: string, insideToken = false) {
+    const str = insideToken ? `:${value}:` : value;
+    const result = str.replace(refPattern, (_pattern, value) => {
+        const ref = props.material?.description[value];
+        const content = props.content;
 
+        return getRefValue(ref, content);
+    });
+
+    if (!insideToken) {
+        return result;
+    }
+
+    if (result === `:${value}:`) {
+        return value;
+    }
+
+    return result;
+}
+
+function refValuePlugin(md: MarkdownIt) {
     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
         let patternContent = tokens[idx].content;
 
-        patternContent = patternContent.replace(refPattern, (_pattern, value) => {
-            const ref = props.material?.description[value];
-            const content = props.content;
+        patternContent = replaceRef(patternContent);
 
-            return getRefValue(ref, content);
-        });
+        return md.utils.escapeHtml(patternContent);
+    };
+}
+
+/* Regular expression to match `:enum<name, key>:` */
+const enumPattern = /:enum<([^:,]+), ([^:]+)>:/gi;
+function replaceEnum(str: string) {
+    return str.replace(enumPattern, (_pattern, name, value) => {
+        const enumName = replaceRef(name, true);
+        const val = replaceRef(value, true);
+        const enumRef = getEnum(project.enumerations.value, enumName);
+
+        return getEnumValue(enumRef, val);
+    });
+}
+
+
+function enumValuePlugin(md: MarkdownIt) {
+    md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
+        let patternContent = tokens[idx].content;
+
+        patternContent = replaceEnum(patternContent);
 
         return md.utils.escapeHtml(patternContent);
     };
@@ -195,7 +233,6 @@ function restartMarkdown() {
     clearTimeout(timer);
 
     timer = window.setTimeout(() => {
-        console.log('changedId');
         componentKey.value = getUid('Text-');
     }, 250);
 }

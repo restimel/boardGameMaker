@@ -157,6 +157,14 @@ The \`attribute\` is the name of a property in the material description.
 
 ### Enumeration
 
+Enumeration are list of presets.
+To access one of the value, use \`:enum<enumName, enumKey>:\`.
+
+* \`enumName\` is to reference the enumeration (which can be defined in [Enumeration page](./alias#Enumeration)).
+* \`enumKey\` is to reference the value inside the enumeration.
+
+Both \`enumName\` and \`enumKey\` can be set with references.
+
 `;
 
 

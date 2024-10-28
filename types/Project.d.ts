@@ -99,6 +99,20 @@ type Alias = {
     image: string;
 };
 
+type KeyValue = {
+    id: string;
+    key: string;
+    value: ContentValue;
+}
+
+type Enumeration = {
+    id: string;
+    name: string;
+    type: DescriptionType;
+    values: KeyValue[];
+    defaultValue: ContentValue;
+};
+
 type Project = {
     title: string;
     author: string;
@@ -121,6 +135,7 @@ type Project = {
     materials: Material[];
 
     alias: Record<string, Alias>;
+    enumerations: Enumeration[];
 };
 
 type StatesKey = keyof Project;

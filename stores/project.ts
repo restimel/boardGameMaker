@@ -22,6 +22,7 @@ const states: ProjectStates = {
     materials: ref<Material[]>([]),
 
     alias: ref<Record<string, Alias>>({}),
+    enumerations: ref<Enumeration[]>([]),
 };
 
 watch(() => states, () => {

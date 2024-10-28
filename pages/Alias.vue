@@ -100,16 +100,106 @@
             </tbody>
         </table>
 
-        <h2>Enumeration</h2>
+        <h2 name="Enumeration">Enumeration</h2>
 
         <p class="explanation">
             Enumeration are used to display symbols in text or values in reference depending on a reference value.<br>
             The <code>Key</code> is the value used to display the <code>Value</code>.
         </p>
 
+        <table class="table-list attributes">
+            <thead>
+                <tr>
+                    <th>
+                        Enumeration
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Values
+                    </th>
+                    <th>
+                        Default value
+                    </th>
+                    <th class="cell-actions">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="enumeration of enumerationList"
+                    :key="`enumeration-list-row-${enumeration.id}`"
+                >
+                    <td>
+                        <input
+                            type="text"
+                            v-model="enumeration.name"
+                        />
+                    </td>
+                    <td>
+                        <InputTypeSelector
+                            v-model="enumeration.type"
+                        />
+                    </td>
+                    <td>
+                        {{ enumeration.values.length }}
+                    </td>
+                    <td>
+                        <input
+                            type="text"
+                            v-model="enumeration.defaultValue"
+                        />
+                    </td>
+                    <td class="cell-actions">
+                        <button @click="updateEnum(enumeration.id)">
+                            ✎
+                        </button>
+                        <button @click="removeEnum(enumeration.id)">
+                            ✕
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input
+                            type="text"
+                            v-model="newEnumeration"
+                            @change="addEnumeration()"
+                        />
+                    </td>
+                    <td>
+                        <InputTypeSelector
+                            disabled
+                        />
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        <input
+                            type="text"
+                            disabled
+                        />
+                    </td>
+                    <td class="cell-actions">
+                    </td>
+                </tr>
+                <tr v-if="attributeError">
+                    <td
+                        :colspan="4"
+                        class="error-message"
+                    >
+                        {{  attributeError }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
 
         <dialog :open="toRemove !== ''">
-            Are you sure to remove the item "{{ toRemove }}"?
+            {{ toRemoveText }}
+            <br>
             <button @click="cancelRemove" class="default-button">
                 Cancel
             </button>
@@ -127,6 +217,7 @@ const project = projectStore();
 
 const attributeError = ref<string>('');
 const newAlias = ref<string>('');
+const newEnumeration = ref<string>('');
 const toRemove = ref<string>('');
 const isImage = ref<Set<string>>(new Set());
 
@@ -134,6 +225,40 @@ const aliasList = computed<Alias[]>(() => {
     const keys = Object.values(project.alias.value);
 
     return keys;
+});
+
+const enumerationList = computed<Enumeration[]>(() => {
+    return project.enumerations.value;
+});
+
+const toRemoveType = computed<'alias' | 'enumeration' | ''>(() => {
+    const id = toRemove.value;
+
+    if (id.startsWith('alias-')) {
+        return 'alias';
+    } else
+    if (id.startsWith('enum-')) {
+        return 'enumeration';
+    }
+
+    return '';
+});
+
+const toRemoveName = computed<string>(() => {
+    const id = toRemove.value;
+
+    switch (toRemoveType.value) {
+        case 'alias':
+            return project.alias.value[id]?.alias ?? '';
+        case 'enumeration':
+            return project.enumerations.value.find((enumeration) => enumeration.id === id)?.name ?? '';
+        case '':
+            return '';
+    }
+});
+
+const toRemoveText = computed<string>(() => {
+    return `Are you sure to remove the ${toRemoveType.value} "${toRemoveName.value}"?`;
 });
 
 watch(aliasList, () => {
@@ -172,11 +297,41 @@ function cancelRemove() {
 function confirmRemove() {
     const id = toRemove.value;
 
-    if (id.startsWith('alias')) {
+    if (id.startsWith('alias-')) {
         delete project.alias.value[id];
+    } else
+    if (id.startsWith('enum-')) {
+        const index = project.enumerations.value.findIndex((enumeration) => enumeration.id === id);
+
+        if (index > -1) {
+            project.enumerations.value.splice(index, 1);
+        }
     }
 
     toRemove.value = '';
+}
+
+function addEnumeration() {
+    const id = getUid('enum-');
+    const enumeration: Enumeration = {
+        id: id,
+        name: newEnumeration.value,
+        values: [],
+        type: 'text',
+        defaultValue: '',
+    };
+
+    project.enumerations.value.push(enumeration);
+
+    newEnumeration.value = '';
+}
+
+function updateEnum(enumId: string) {
+    console.log('TODO: enum update', enumId);
+}
+
+function removeEnum(enumId: string) {
+    toRemove.value = enumId;
 }
 
 </script>
