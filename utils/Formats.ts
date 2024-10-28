@@ -121,6 +121,14 @@ export function formatValue(value: ContentValue, type: DescriptionType): string 
 
             return value.toString(10);
         }
+
+        case 'color': {
+            if (typeof value === 'string') {
+                return value;
+            }
+
+            return '';
+        }
     }
 }
 
@@ -134,19 +142,23 @@ export function getRefValue(ref?: MaterialDescription | null, content?: Material
 
     const propValue = content?.[property];
 
+    /* When ref has a value */
     if (typeof propValue !== 'undefined') {
         return formatValue(propValue, type);
     }
 
     const defaultValue = ref?.defaultValue;
 
+    /* When description has a default value */
     if (typeof defaultValue !== 'undefined' && defaultValue !== '') {
         return formatValue(defaultValue, type);
     }
 
+    /* when no default are set */
     switch (type) {
         case 'image': return 'data:image/svg+xml,%3Csvg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Crect x="4" y="4" width="232" height="172" fill="none" stroke="%23999" stroke-width="2" stroke-dasharray="8 4"/%3E%3Crect x="70" y="50" width="100" height="80" fill="%23999"/%3E%3Ccircle cx="100" cy="80" r="15" fill="%23f0f0f0"/%3E%3Cpath d="M70 110 L100 90 L130 110 L170 80 L170 130 L70 130 Z" fill="%23f0f0f0"/%3E%3C/svg%3E';
         case 'number': return '0';
         case 'text': return `<${property}>`;
+        case 'color': return getDefaultMaterialTextColor();
     }
 }
