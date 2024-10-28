@@ -31,6 +31,8 @@
                         <InputContent
                             :description="material.description[propertyName]"
                             v-model="content[propertyName]"
+                            :material="material"
+                            :content="content"
                         />
                     </td>
                     <td class="cell-actions">
@@ -51,6 +53,8 @@
                         <InputContent
                             :description="material.description[propertyName]"
                             @change="addContent(propertyName, $event)"
+                            :material="material"
+                            :content="null"
                         />
                     </td>
                     <td class="cell-actions">

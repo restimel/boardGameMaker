@@ -91,7 +91,7 @@
                 </tr>
                 <tr v-if="attributeError">
                     <td
-                        :colspan="2 + properties.length"
+                        :colspan="4"
                         class="error-message"
                     >
                         {{  attributeError }}

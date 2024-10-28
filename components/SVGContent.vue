@@ -22,7 +22,7 @@
                     --text-alignment: ${detail.content.alignment}
                 `"
             >
-                <Text :value="value" class="inline-text" />
+                <Text :value="value" class="inline-text" :material="material" :content="content" />
             </div>
         </foreignObject>
     </g>

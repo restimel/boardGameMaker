@@ -2,6 +2,8 @@
     <TextEditor v-if="type === 'text'"
         v-model="value"
         :placeholder="getRefValue(props.description, {})"
+        :material="material"
+        :content="content"
         noPreview
         @change="change"
     />
@@ -29,6 +31,8 @@
 <script setup lang="ts">
 type Props = {
     description: MaterialDescription;
+    material?: Material;
+    content?: MaterialContent | null;
 };
 
 const props = defineProps<Props>();

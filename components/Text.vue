@@ -19,6 +19,8 @@ import projectStore from '~/stores/project';
 
 type Props = {
     value?: string;
+    material?: Material;
+    content?: MaterialContent | null;
 };
 
 const props = defineProps<Props>();
@@ -139,7 +141,6 @@ const aliases = computed(() => {
 const emoji = computed(() => {
     const plugin = (instance) => instance.use(MarkdownEmoji, {
         defs: {
-            plop: '🎉',
             ...enclosedChars,
             ...aliases.value,
         }

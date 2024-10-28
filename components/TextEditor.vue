@@ -13,6 +13,8 @@
         />
         <Text v-if="!props.noPreview"
             :value="value?.toString()"
+            :material="material"
+            :content="content"
         />
     </div>
 </template>
@@ -21,6 +23,8 @@
 type Props = {
     placeholder?: string;
     noPreview?: boolean;
+    material?: Material;
+    content?: MaterialContent | null;
 };
 
 const props = defineProps<Props>();
