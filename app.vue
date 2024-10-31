@@ -79,8 +79,11 @@
     .inline-text {
         display: inline;
     }
-    .inline-text > p {
+    .inline-text > p,
+    .inline-text > * > p {
         display: inline;
+        margin-block-start: 0;
+        margin-block-end: 0;
     }
 
     .unit {

@@ -1,7 +1,8 @@
 
+type EnumerationType = `enumeration:${string}`;
 type MaterialType = 'Cards' | 'Dice';
 type MaterialPart = 'Box' | 'Image';
-type DescriptionType = 'text' | 'number' | 'image' | 'color';
+type DescriptionType = 'text' | 'number' | 'image' | 'color' | EnumerationType;
 
 /** [major, minor, variation] */
 type Version = [number, number, number];

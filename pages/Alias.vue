@@ -7,7 +7,7 @@
             Alias are used to display symbols in text. For example, in any text, you can type <code>:(1):</code> and it will be displayed <code>①</code>.
         </p>
 
-        <table class="table-list attributes">
+        <table class="table-list alias">
             <thead>
                 <tr>
                     <th>
@@ -107,7 +107,7 @@
             The <code>Key</code> is the value used to display the <code>Value</code>.
         </p>
 
-        <table class="table-list attributes">
+        <table class="table-list enumerations">
             <thead>
                 <tr>
                     <th>
@@ -185,14 +185,6 @@
                     <td class="cell-actions">
                     </td>
                 </tr>
-                <tr v-if="attributeError">
-                    <td
-                        :colspan="4"
-                        class="error-message"
-                    >
-                        {{  attributeError }}
-                    </td>
-                </tr>
             </tbody>
         </table>
 
@@ -207,6 +199,27 @@
                 Confirm
             </button>
         </dialog>
+        <dialog :open="enumToUpdate !== null"
+            class="update-enumeration"
+        >
+            <template
+                v-if="enumToUpdate"
+            >
+                <h1>
+                    {{ enumToUpdate.name }}
+                </h1>
+                <EnumerationEdit
+                    :values="enumToUpdate.values"
+                    :description="enumToUpdate as MaterialDescription"
+                />
+                <button
+                    class="default-button"
+                    @click="updateEnumId = ''"
+                >
+                    Close
+                </button>
+            </template>
+        </dialog>
     </div>
 </template>
 <script setup lang="ts">
@@ -220,6 +233,7 @@ const newAlias = ref<string>('');
 const newEnumeration = ref<string>('');
 const toRemove = ref<string>('');
 const isImage = ref<Set<string>>(new Set());
+const updateEnumId = ref<string>('');
 
 const aliasList = computed<Alias[]>(() => {
     const keys = Object.values(project.alias.value);
@@ -259,6 +273,18 @@ const toRemoveName = computed<string>(() => {
 
 const toRemoveText = computed<string>(() => {
     return `Are you sure to remove the ${toRemoveType.value} "${toRemoveName.value}"?`;
+});
+
+const enumToUpdate = computed<Enumeration | null>(() => {
+    const id = updateEnumId.value;
+
+    if (!id) {
+        return null;
+    }
+
+    const enumeration = getEnum(enumerationList.value, id, 'id');
+
+    return enumeration;
 });
 
 watch(aliasList, () => {
@@ -327,7 +353,7 @@ function addEnumeration() {
 }
 
 function updateEnum(enumId: string) {
-    console.log('TODO: enum update', enumId);
+    updateEnumId.value = enumId;
 }
 
 function removeEnum(enumId: string) {

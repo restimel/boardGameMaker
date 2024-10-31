@@ -161,7 +161,6 @@ const emoji = computed(() => {
 const plugins = computed(() => [
     MarkdownEmoji,
     emoji.value,
-    refValuePlugin,
     enumValuePlugin,
     MarkdownSub,
     MarkdownSup,
@@ -174,7 +173,7 @@ watch(aliases, () => {
 });
 
 /* Regular expression to match `:ref<value>:` */
-const refPattern = /:ref<([^:]+)>:/gi;
+const refPattern = /:ref<\s*([^:]+)\s*>:/gi;
 function replaceRef(value: string, insideToken = false) {
     const str = insideToken ? `:${value}:` : value;
     const result = str.replace(refPattern, (_pattern, value) => {
@@ -206,7 +205,7 @@ function refValuePlugin(md: MarkdownIt) {
 }
 
 /* Regular expression to match `:enum<name, key>:` */
-const enumPattern = /:enum<([^:,]+), ([^:]+)>:/gi;
+const enumPattern = /:enum<\s*([^:,]+)\s*,\s*([^:]+)\s*>:/gi;
 function replaceEnum(str: string) {
     return str.replace(enumPattern, (_pattern, name, value) => {
         const enumName = replaceRef(name, true);
@@ -222,6 +221,7 @@ function enumValuePlugin(md: MarkdownIt) {
     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
         let patternContent = tokens[idx].content;
 
+        patternContent = replaceRef(patternContent);
         patternContent = replaceEnum(patternContent);
 
         return md.utils.escapeHtml(patternContent);

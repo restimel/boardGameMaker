@@ -167,8 +167,8 @@ export function getRefValue(ref?: MaterialDescription | null, content?: Material
     return getDefaultValue(type, property);
 }
 
-export function getEnum(enumerations: Enumeration[], name: string): Enumeration | null {
-    return enumerations.find((enumeration) => enumeration.name === name) ?? null;
+export function getEnum(enumerations: Enumeration[], name: string, prop: 'id' | 'name' = 'name'): Enumeration | null {
+    return enumerations.find((enumeration) => enumeration[prop] === name) ?? null;
 }
 
 export function getEnumValue(enumeration: Enumeration | null, key: string): string {

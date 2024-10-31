@@ -1,6 +1,6 @@
 <template>
     <div class="contents-area">
-        <table class="table-list attributes">
+        <table class="table-list contents">
             <thead>
                 <tr>
                     <th class="index"></th>

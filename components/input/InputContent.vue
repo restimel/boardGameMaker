@@ -22,6 +22,17 @@
         v-model="value"
         @change="change"
     />
+    <select v-else-if="type.startsWith('enumeration:')"
+        v-model="value"
+        @change="change"
+    >
+        <option v-for="enumeration of (getEnum(project.enumerations.value, type.slice(12), 'id')?.values ?? [])"
+            :key="`inputContent-${enumeration.id}`"
+            :value="enumeration.value"
+        >
+            {{ enumeration.value }}
+        </option>
+    </select>
     <input v-else
         type="text"
         v-model="value"
@@ -29,6 +40,10 @@
     />
 </template>
 <script setup lang="ts">
+import projectStore from '~/stores/project';
+
+const project = projectStore();
+
 type Props = {
     description: MaterialDescription;
     material?: Material;

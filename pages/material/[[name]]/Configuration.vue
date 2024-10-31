@@ -72,6 +72,7 @@
                         <td>
                             <InputTypeSelector
                                 v-model="attribute.type"
+                                withEnumeration
                             />
                         </td>
                         <td>
@@ -94,7 +95,7 @@
                                 :key="`attribute-name-${attributeList.length}`"
                                 type="text"
                                 placeholder="new attribute"
-                                @change="addAttribute($event.currentTarget!.value)"
+                                @change="addAttribute(($event.currentTarget as HTMLInputElement).value)"
                             >
                         </td>
                         <td>
@@ -230,7 +231,6 @@ watch(material, () => {
     const idx = materialIdx.value;
 
     project.materials.value[idx] = material.value;
-    console.log('update material', idx, material.value);
 }, { deep: true });
 
 watch(attributeList, () => {
