@@ -115,9 +115,9 @@ type Enumeration = {
 };
 
 type Project = {
-    title: string;
     author: string;
-    version: Version;
+    /** minor change */
+    buildVersion: number;
 
     concept: string;
     setup: string;
@@ -142,4 +142,19 @@ type Project = {
 type StatesKey = keyof Project;
 type ProjectStates = {
     [Key in StatesKey]: Ref<Project[Key]>;
+} & {
+    title: Ref<string>;
+    /** Gameproject id */
+    id: Ref<string>;
+    version: Ref<string>;
 };
+
+type GameProject = {
+    title: string;
+    id: string;
+
+    /** key is version: <major>.<minor> */
+    versions: Record<string, Project>;
+};
+
+type Projects = GameProjects[];

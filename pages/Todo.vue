@@ -12,8 +12,9 @@ const value = `
 
 ### Project
 
-* [ ] project version
+* [x] project version
 * [ ] can select between different project
+    * [ ] What happen when save minor/major/build when not on last?
 * [ ] import/export project
 
 ### Print
@@ -26,6 +27,7 @@ const value = `
 
 ## :exclamation: less important features
 
+* [ ] clean up Formats
 * [ ] shape circle
 * [ ] Do a save with Nuxt
 * [ ] print all
@@ -34,6 +36,7 @@ const value = `
 ## :bug: Bugs
 
 * [ ] hydratation (be nuxt ready)
+* [ ] at start isChanged is false but buttons are enabled
 
 `;
 
