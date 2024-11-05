@@ -24,6 +24,10 @@
             <tbody>
                 <tr v-for="(project, index) in projects"
                     :key="`project-list-${index}-${project.id}`"
+                    :class="{
+                        'active-row': project.id === currentProject.id,
+                    }"
+                    @click="details = project"
                 >
                     <td>
                         {{  index + 1 }}
@@ -35,10 +39,13 @@
                         {{ lastVersion(project) }}
                     </td>
                     <td>
-                        {{ project.versions.length }}
+                        {{ Object.keys(project.versions).length }}
                     </td>
                     <td class="cell-actions">
-                        <button @click="removeItem(enumItem.id)">
+                        <button @click.stop="setActiveProjectVersion(project.id, lastVersion(project).split('.').slice(0, 2).join('.'))">
+                            ▶️
+                        </button>
+                        <button @click.stop="removeItem(project.id)">
                             ✕
                         </button>
                     </td>
@@ -75,14 +82,27 @@
                 Confirm
             </button>
         </dialog>
+        <dialog :open="details !== null">
+            <ProjectVersions v-if="details"
+                :project="details"
+            />
+            <button @click="details = null">
+                Close
+            </button>
+        </dialog>
     </div>
 </template>
 <script setup lang="ts">
 
-import { projects } from '../stores/project';
+import {
+    projects,
+    currentProject,
+    setActiveProjectVersion,
+} from '../stores/project';
 
 const newItemName = ref<string>('');
 const toRemove = ref<string>('');
+const details = ref<GameProject | null>(null);
 
 const toRemoveText = computed<string>(() => {
     if (toRemove.value === '') {
@@ -125,5 +145,9 @@ function confirmRemove() {
 
 </script>
 <style scoped>
+
+.active-row {
+    box-shadow: inset 0 0 5px 0 var(--active-color);
+}
 
 </style>

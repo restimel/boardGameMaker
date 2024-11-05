@@ -179,15 +179,16 @@ export function setActiveProjectVersion(id: string, version: string) {
     const activeProject = currentProject.value;
     const activeVersion = activeProject.versions[version];
 
-    if (!activeVersion) {
-        return false;
-    }
-
     reset();
     states.id.value = activeProject.id;
     states.title.value = activeProject.title;
     states.version.value = version;
-    loadProject(activeVersion);
+
+    if (activeVersion) {
+        loadProject(activeVersion);
+    }
+
+    return true;
 }
 
 function loadProject(projectVersion: Project) {

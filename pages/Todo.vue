@@ -13,8 +13,9 @@ const value = `
 ### Project
 
 * [x] project version
-* [ ] can select between different project
+* [x] can select between different project
     * [ ] What happen when save minor/major/build when not on last?
+    * [ ] Should confirm to drop changes when changing to a version (and there are changes)
 * [ ] import/export project
 
 ### Print
@@ -29,6 +30,8 @@ const value = `
 
 * [ ] clean up Formats
 * [ ] shape circle
+* [ ] references: index & total
+* [ ] reference to material
 * [ ] Do a save with Nuxt
 * [ ] print all
 * [ ] material: board

@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h1>{{ project.title }}</h1>
+        <h1>
+            {{ project.title }}
+            <sub>{{ project.version }}.{{ project.buildVersion }}</sub>
+        </h1>
         <label>
             Author:
             <output>{{ project.author }}</output>
