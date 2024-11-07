@@ -189,18 +189,14 @@
         </table>
 
 
-        <dialog :open="toRemove !== ''">
+        <Dialog :open="toRemove !== ''"
+            @cancel="cancelRemove"
+            @confirm="confirmRemove"
+        >
             {{ toRemoveText }}
-            <br>
-            <button @click="cancelRemove" class="default-button">
-                Cancel
-            </button>
-            <button @click="confirmRemove" class="main-button">
-                Confirm
-            </button>
-        </dialog>
+        </Dialog>
         <dialog :open="enumToUpdate !== null"
-            class="update-enumeration"
+            class="update-enumeration dialog"
         >
             <template
                 v-if="enumToUpdate"

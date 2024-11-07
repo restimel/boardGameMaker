@@ -1,6 +1,7 @@
 <template>
     <NuxtLayout>
         <NuxtPage />
+        <ConfirmDialog />
     </NuxtLayout>
 </template>
 
@@ -49,10 +50,6 @@
     }
 
     dialog {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         padding: 2em;
         border: 1px solid var(--table-border);
         border-radius: 8px;

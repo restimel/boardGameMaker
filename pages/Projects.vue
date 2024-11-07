@@ -2,6 +2,11 @@
     <div>
         <h1>Project list</h1>
 
+        <p>
+            The current active project is "{{ project.title }}"
+            <sub>{{ project.version.value + '.' + project.buildVersion.value }}</sub>
+        </p>
+
         <table class="table-list project-list">
             <thead>
                 <tr>
@@ -22,30 +27,30 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(project, index) in projects"
-                    :key="`project-list-${index}-${project.id}`"
+                <tr v-for="(gProject, index) in projects"
+                    :key="`project-list-${index}-${gProject.id}`"
                     :class="{
-                        'active-row': project.id === currentProject.id,
+                        'active-row': gProject.id === currentProject.id,
                     }"
-                    @click="details = project"
+                    @click="details = gProject"
                 >
                     <td>
                         {{  index + 1 }}
                     </td>
                     <td>
-                        {{ project.title }}
+                        {{ gProject.title }}
                     </td>
                     <td>
-                        {{ lastVersion(project) }}
+                        {{ lastVersion(gProject) }}
                     </td>
                     <td>
-                        {{ Object.keys(project.versions).length }}
+                        {{ Object.keys(gProject.versions).length }}
                     </td>
                     <td class="cell-actions">
-                        <button @click.stop="setActiveProjectVersion(project.id, lastVersion(project).split('.').slice(0, 2).join('.'))">
+                        <button @click.stop="setActiveProjectVersion(gProject.id, lastVersion(gProject).split('.').slice(0, 2).join('.'))">
                             ▶️
                         </button>
-                        <button @click.stop="removeItem(project.id)">
+                        <button @click.stop="removeItem(gProject.id)">
                             ✕
                         </button>
                     </td>
@@ -72,19 +77,19 @@
                 </tr>
             </tbody>
         </table>
-        <dialog :open="toRemove !== ''">
+        <Dialog :open="toRemove !== ''"
+            @cancel="cancelRemove"
+            @confirm="confirmRemove"
+        >
             {{ toRemoveText }}
-            <br>
-            <button @click="cancelRemove" class="default-button">
-                Cancel
-            </button>
-            <button @click="confirmRemove" class="main-button">
-                Confirm
-            </button>
-        </dialog>
-        <dialog :open="details !== null">
+        </Dialog>
+        <dialog :open="details !== null"
+            class="dialog"
+        >
             <ProjectVersions v-if="details"
                 :project="details"
+                :isActiveProject="details.id === project.id.value"
+                :activeVersion="project.version.value"
             />
             <button @click="details = null">
                 Close
@@ -94,11 +99,13 @@
 </template>
 <script setup lang="ts">
 
-import {
+import projectStore, {
     projects,
     currentProject,
     setActiveProjectVersion,
 } from '../stores/project';
+
+const project = projectStore();
 
 const newItemName = ref<string>('');
 const toRemove = ref<string>('');
@@ -109,10 +116,11 @@ const toRemoveText = computed<string>(() => {
         return '';
     }
 
-    console.log('TODO remove');
-    const title = toRemove.value;
+    const id = toRemove.value;
+    const gProject = projects.value.find((gameProject) => gameProject.id === id);
+    const title = gProject.title ?? id;
 
-    return `Are you sure to remove the project "${title}"?`;
+    return `Are you sure to remove definitely the project "${title}"?`;
 });
 
 function lastVersion(project: GameProject): string {
@@ -122,8 +130,8 @@ function lastVersion(project: GameProject): string {
 }
 
 function addItem() {
-    const project = createProject(newItemName.value);
-    projects.value.push(project);
+    const gProject = createProject(newItemName.value);
+    projects.value.push(gProject);
     newItemName.value = '';
 }
 
@@ -138,7 +146,7 @@ function cancelRemove() {
 
 function confirmRemove() {
     const id = toRemove.value;
-    const index = projects.value.findIndex((project) => project.id === id);
+    const index = projects.value.findIndex((gProject) => gProject.id === id);
     projects.value.splice(index, 1);
     toRemove.value = '';
 }

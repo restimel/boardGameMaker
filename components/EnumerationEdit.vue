@@ -55,16 +55,12 @@
             </tr>
         </tbody>
     </table>
-    <dialog :open="toRemove !== ''">
+    <Dialog :open="toRemove !== ''"
+        @cancel="cancelRemove"
+        @confirm="confirmRemove"
+    >
         {{ toRemoveText }}
-        <br>
-        <button @click="cancelRemove" class="default-button">
-            Cancel
-        </button>
-        <button @click="confirmRemove" class="main-button">
-            Confirm
-        </button>
-    </dialog>
+    </Dialog>
 </template>
 <script setup lang="ts">
 type Props = {

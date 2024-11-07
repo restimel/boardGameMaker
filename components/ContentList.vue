@@ -76,15 +76,12 @@
                 :content="activeContent"
             />
 
-            <dialog :open="itemIdx >= 0">
+            <Dialog :open="itemIdx >= 0"
+                @cancel="cancelRemove"
+                @confirm="confirmRemove"
+            >
                 Are you sure to remove the item "{{ itemIdx }}"?
-                <button @click="cancelRemove" class="default-button">
-                    Cancel
-                </button>
-                <button @click="confirmRemove" class="main-button">
-                    Confirm
-                </button>
-            </dialog>
+            </Dialog>
         </div>
     </div>
 </template>

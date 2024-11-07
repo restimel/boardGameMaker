@@ -194,15 +194,15 @@ function replaceRef(value: string, insideToken = false) {
     return result;
 }
 
-function refValuePlugin(md: MarkdownIt) {
-    md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
-        let patternContent = tokens[idx].content;
+// function refValuePlugin(md: MarkdownIt) {
+//     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
+//         let patternContent = tokens[idx].content;
 
-        patternContent = replaceRef(patternContent);
+//         patternContent = replaceRef(patternContent);
 
-        return md.utils.escapeHtml(patternContent);
-    };
-}
+//         return md.utils.escapeHtml(patternContent);
+//     };
+// }
 
 /* Regular expression to match `:enum<name, key>:` */
 const enumPattern = /:enum<\s*([^:,]+)\s*,\s*([^:]+)\s*>:/gi;

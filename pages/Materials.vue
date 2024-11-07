@@ -59,15 +59,12 @@
                 + Add a material
             </button>
         </footer>
-        <dialog :open="!!itemName">
-            Are you sure to remove "{{ itemName }}"?
-            <button @click="cancelRemove">
-                Cancel
-            </button>
-            <button @click="confirmRemove">
-                Confirm
-            </button>
-        </dialog>
+        <Dialog :open="!!itemName"
+            @cancel="cancelRemove"
+            @confirm="confirmRemove"
+        >
+            Are you sure to remove the material "{{ itemName }}"?
+        </Dialog>
     </div>
 </template>
 <script setup lang="ts">

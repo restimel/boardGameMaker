@@ -15,12 +15,14 @@ const value = `
 * [x] project version
 * [x] can select between different project
     * [ ] What happen when save minor/major/build when not on last?
-    * [ ] Should confirm to drop changes when changing to a version (and there are changes)
+    * [x] Should confirm to drop changes when changing to a version (and there are changes)
 * [ ] import/export project
+    * [ ] import: check that project/version does not already exist and ask to override/skip
 
 ### Print
 
 * [ ] layer for print (without header)
+    * [ ] assert material is displayed entirely in a page
 
 ### Material
 
@@ -34,10 +36,12 @@ const value = `
 * [ ] reference to material
 * [ ] Do a save with Nuxt
 * [ ] print all
+    * [ ] print back + front
 * [ ] material: board
 
 ## :bug: Bugs
 
+* [ ] when refreshing the active project is the first instead of the previous one
 * [ ] hydratation (be nuxt ready)
 * [ ] at start isChanged is false but buttons are enabled
 

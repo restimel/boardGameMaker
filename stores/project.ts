@@ -165,11 +165,27 @@ watch(projects, () => {
     nuxtStorage.localStorage.setData('projects', serialized, 30_000, 'd');
 }, { deep: true });
 
-export function setActiveProjectVersion(id: string, version: string) {
+export function setActiveProjectVersion(id: string, version: string, forceChange = false) {
+    console.log('setActiveProjectverison', id, version);
+    if (!forceChange && isChanged.value) {
+        confirmDialog(`There are some change that are not saved.
+They will be lost if you change to another project.
+
+**Are you sure to continue** and losing these changes?
+`).then((confirm) => {
+            if (confirm) {
+                setActiveProjectVersion(id, version, true);
+            }
+        });
+
+        return;
+    }
+
     if (currentProject.value.id !== id) {
         const activeProject = projects.value.find((pjt) => pjt.id === id);
 
         if (!activeProject) {
+            console.log('no active project')
             return false;
         }
 
@@ -219,7 +235,7 @@ function loadProjects(projectList: Projects) {
 
         if (firstProject) {
             const [major, minor] = getLastVersion(firstProject);
-            setActiveProjectVersion(firstProject.id, `${major}.${minor}`);
+            setActiveProjectVersion(firstProject.id, `${major}.${minor}`, true);
         } else {
             saveProject('new');
         }
