@@ -32,12 +32,6 @@
             </tr>
         </tbody>
     </table>
-    <Dialog :open="toRemove !== ''"
-        @cancel="cancelRemove"
-        @confirm="confirmRemove"
-    >
-        {{ toRemoveText }}
-    </Dialog>
 </template>
 <script setup lang="ts">
 
@@ -53,23 +47,16 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const toRemove = ref<string>('');
-
-const toRemoveText = computed<string>(() => {
-    return `Are you sure to remove the version "${toRemove.value}" and all its content?`;
-});
-
-function removeItem(id: string) {
-    toRemove.value = id;
+function removeItem(version: string) {
+    confirmDialog(`Are you sure to remove the **version** "${version}" and all its content?`).then((confirm) => {
+        if (confirm) {
+            confirmRemove(version);
+        }
+    });
 }
 
-function cancelRemove() {
-    toRemove.value = '';
-}
-
-function confirmRemove() {
-    delete props.project.versions[toRemove.value];
-    toRemove.value = '';
+function confirmRemove(version: string) {
+    delete props.project.versions[version];
 }
 
 </script>

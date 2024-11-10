@@ -77,12 +77,6 @@
                 </tr>
             </tbody>
         </table>
-        <Dialog :open="toRemove !== ''"
-            @cancel="cancelRemove"
-            @confirm="confirmRemove"
-        >
-            {{ toRemoveText }}
-        </Dialog>
         <dialog :open="details !== null"
             class="dialog"
         >
@@ -120,7 +114,7 @@ const toRemoveText = computed<string>(() => {
     const gProject = projects.value.find((gameProject) => gameProject.id === id);
     const title = gProject.title ?? id;
 
-    return `Are you sure to remove definitely the project "${title}"?`;
+    return `Are you sure to remove definitely the **project** "${title}"?`;
 });
 
 function lastVersion(project: GameProject): string {
@@ -136,12 +130,15 @@ function addItem() {
 }
 
 
-function removeItem(id: string) {
+async function removeItem(id: string) {
     toRemove.value = id;
-}
+    const result = await confirmDialog(toRemoveText.value);
 
-function cancelRemove() {
-    toRemove.value = '';
+    if (result) {
+        confirmRemove();
+    } else {
+        toRemove.value = '';
+    }
 }
 
 function confirmRemove() {

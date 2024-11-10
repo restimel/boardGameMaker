@@ -154,13 +154,6 @@
                 Create a new material
             </button>
         </footer>
-
-        <Dialog :open="itemIdx >= 0"
-            @cancel="cancelRemove"
-            @confirm="confirmRemove"
-        >
-            Are you sure to remove "{{ attributeList[itemIdx]?.name }}"?
-        </Dialog>
     </div>
 </template>
 <script setup lang="ts">
@@ -195,7 +188,6 @@ const defaultMaterial: Material = {
 const materialIdx = ref<number>(-1);
 const material = ref<Material>(defaultMaterial);
 const attributeList = ref<MaterialDescription[]>([]);
-const itemIdx = ref<number>(-1);
 const attributeError = ref<string>('');
 
 
@@ -235,21 +227,22 @@ watch(attributeList, () => {
 }, { deep: true });
 
 
-function removeAttribute(key: number | string) {
-    itemIdx.value = +key;
+async function removeAttribute(key: number | string) {
+    const itemIdx = +key;
+    const result = await confirmDialog(`Are you sure to remove the **attribute** "${attributeList.value[itemIdx]?.name}"?`);
+
+    if (result) {
+        confirmRemove(itemIdx);
+    }
 }
 
-function confirmRemove() {
+function confirmRemove(idx: number) {
     const list = attributeList.value;
-    const idx = itemIdx.value;
 
     list.splice(idx, 1);
     attributeList.value = list;
-    itemIdx.value = -1;
 }
-function cancelRemove() {
-    itemIdx.value = -1;
-}
+
 function addAttribute(attributeName: string) {
     const attributes = attributeList.value;
 

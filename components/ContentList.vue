@@ -75,13 +75,6 @@
                 :material="material"
                 :content="activeContent"
             />
-
-            <Dialog :open="itemIdx >= 0"
-                @cancel="cancelRemove"
-                @confirm="confirmRemove"
-            >
-                Are you sure to remove the item "{{ itemIdx }}"?
-            </Dialog>
         </div>
     </div>
 </template>
@@ -95,7 +88,6 @@ const contentsModel = defineModel<MaterialContent[]>();
 
 const attributeError = ref<string>('');
 const activeContent = ref<MaterialContent | null>(null);
-const itemIdx = ref<number>(-1);
 
 const contents = computed<MaterialContent[]>(() => {
     const list = contentsModel.value;
@@ -127,19 +119,20 @@ function addContent(propertyName: string, value: ContentValue) {
 }
 
 function removeContent(key: number | string) {
-    itemIdx.value = +key;
+    const item = +key;
+    console.log('remove?')
+    confirmDialog(`Are you sure to remove the item "**${ item }**"?`).then((confirm) => {
+        if (confirm) {
+            confirmRemove(item);
+        }
+    });
 }
 
-function confirmRemove() {
+function confirmRemove(idx: number) {
     const list = contentsModel.value ?? [];
-    const idx = itemIdx.value;
 
     list.splice(idx, 1);
     contentsModel.value = list;
-    itemIdx.value = -1;
-}
-function cancelRemove() {
-    itemIdx.value = -1;
 }
 
 </script>

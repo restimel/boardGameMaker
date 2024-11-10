@@ -59,12 +59,6 @@
                 + Add a material
             </button>
         </footer>
-        <Dialog :open="!!itemName"
-            @cancel="cancelRemove"
-            @confirm="confirmRemove"
-        >
-            Are you sure to remove the material "{{ itemName }}"?
-        </Dialog>
     </div>
 </template>
 <script setup lang="ts">
@@ -72,26 +66,24 @@
 import projectStore from '~/stores/project';
 
 const project = projectStore();
-const itemName = ref<string>('');
 
 function addItem() {
     navigateTo('/material/configuration');
 }
 
-function removeItem(name: string) {
-    itemName.value = name;
+async function removeItem(name: string) {
+    const result = await confirmDialog(`Are you sure to remove the **material** "${name}"?`);
+
+    if (result) {
+        confirmRemove(name);
+    }
 }
 
-function cancelRemove() {
-    itemName.value = '';
-}
-function confirmRemove() {
+function confirmRemove(value: string) {
     const materials = project.materials.value;
-    const value = itemName.value;
     const index = materials.findIndex((item) => item.name === value);
     materials.splice(index, 1);
 
-    itemName.value = '';
     project.materials.value = materials;
 }
 

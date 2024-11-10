@@ -59,7 +59,7 @@
                         <Text :value="`\\:${alias.alias}\\: → :${alias.alias}:`" />
                     </td>
                     <td class="cell-actions">
-                        <button @click="removeAlias(alias.id)">
+                        <button @click="removeItem(alias.id)">
                             ✕
                         </button>
                     </td>
@@ -155,7 +155,7 @@
                         <button @click="updateEnum(enumeration.id)">
                             ✎
                         </button>
-                        <button @click="removeEnum(enumeration.id)">
+                        <button @click="removeItem(enumeration.id)">
                             ✕
                         </button>
                     </td>
@@ -188,13 +188,6 @@
             </tbody>
         </table>
 
-
-        <Dialog :open="toRemove !== ''"
-            @cancel="cancelRemove"
-            @confirm="confirmRemove"
-        >
-            {{ toRemoveText }}
-        </Dialog>
         <dialog :open="enumToUpdate !== null"
             class="update-enumeration dialog"
         >
@@ -309,13 +302,10 @@ function addAlias() {
     newAlias.value = '';
 }
 
-function removeAlias(aliasId: string) {
-    toRemove.value = aliasId;
-}
-
 function cancelRemove() {
     toRemove.value = '';
 }
+
 function confirmRemove() {
     const id = toRemove.value;
 
@@ -352,8 +342,15 @@ function updateEnum(enumId: string) {
     updateEnumId.value = enumId;
 }
 
-function removeEnum(enumId: string) {
-    toRemove.value = enumId;
+async function removeItem(itemId: string) {
+    toRemove.value = itemId;
+    const result = await confirmDialog(toRemoveText.value);
+
+    if (result) {
+        confirmRemove();
+    } else {
+        cancelRemove();
+    }
 }
 
 </script>

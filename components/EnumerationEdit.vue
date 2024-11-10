@@ -55,12 +55,6 @@
             </tr>
         </tbody>
     </table>
-    <Dialog :open="toRemove !== ''"
-        @cancel="cancelRemove"
-        @confirm="confirmRemove"
-    >
-        {{ toRemoveText }}
-    </Dialog>
 </template>
 <script setup lang="ts">
 type Props = {
@@ -80,11 +74,16 @@ const toRemoveText = computed<string>(() => {
         return '';
     }
 
-    return `Are you sure to remove the enumeration value "${item.key} → ${item.value}"?`
+    return `Are you sure to remove the enumeration value "${item.key} → ${item.value}"?`
 });
 
 function removeItem(id: string) {
     toRemove.value = id;
+    confirmDialog(toRemoveText.value).then((response) => {
+        if (response) {
+            confirmRemove();
+        }
+    });
 }
 
 function addItem() {
@@ -97,10 +96,6 @@ function addItem() {
     props.values.push(item);
 
     newItemKey.value = '';
-}
-
-function cancelRemove() {
-    toRemove.value = '';
 }
 
 function confirmRemove() {

@@ -38,6 +38,7 @@ const value = `
 * [ ] print all
     * [ ] print back + front
 * [ ] material: board
+* [ ] check when removing an item it is not used (for example attributes used in description)
 
 ## :bug: Bugs
 

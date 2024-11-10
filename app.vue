@@ -62,6 +62,12 @@
         background-color: rgba(100, 100, 100, 0.5);
     }
 
+    .dialog {
+        position: fixed;
+        top: 50vh;
+        transform: translateY(-50%);
+    }
+
     h1 {
         text-align: center;
     }
