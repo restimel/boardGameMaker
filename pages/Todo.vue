@@ -31,8 +31,8 @@ const value = `
 ## :exclamation: less important features
 
 * [ ] clean up Formats
-* [ ] shape circle
-* [ ] references: index & total
+* [ ] draw shape circle
+* [x] references: index & total
 * [ ] reference to material
 * [ ] Do a save with Nuxt
 * [ ] print all

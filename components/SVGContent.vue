@@ -87,7 +87,7 @@ const type = computed(() => {
     }
 
     if (contentType === 'Reference') {
-        if (ref.value?.type === 'image') {
+        if (descRef.value?.type === 'image') {
             return 'Image';
         }
 
@@ -97,6 +97,22 @@ const type = computed(() => {
     return 'None';
 });
 
+const extendedContent = computed< MaterialContent | null | undefined>(() => {
+    const content = props.content;
+
+    if (!content) {
+        return content;
+    }
+
+    const extContent = {
+        index: props.material.contents.indexOf(content) + 1,
+        total: props.material.contents.length,
+        ... content,
+    };
+
+    return extContent;
+});
+
 const value = computed<string>(() => {
     const contentType = detail.value.content.type;
     const contentValue = detail.value.content.value;
@@ -104,14 +120,14 @@ const value = computed<string>(() => {
     switch (contentType) {
         case 'StaticText': return contentValue;
         case 'StaticImage': return contentValue;
-        case 'Reference': return getRefValue(ref.value, props.content);
+        case 'Reference': return getRefValue(descRef.value, extendedContent.value);
     }
 
     console.warn('type not managed yet :(', contentType);
     return '';
 });
 
-const ref = computed<MaterialDescription | null>(() => {
+const descRef = computed<MaterialDescription | null>(() => {
     const contentType = detail.value.content.type;
     if (contentType !== 'Reference') {
         return null;
@@ -121,6 +137,23 @@ const ref = computed<MaterialDescription | null>(() => {
     const description = props.material.description;
 
     const reference = description[contentValue];
+
+    if (!reference) {
+        if (contentValue === 'index') {
+            return {
+                name: 'index',
+                type: 'number',
+                defaultValue: '0',
+            };
+        }
+        if (contentValue === 'total') {
+            return {
+                name: 'total',
+                type: 'number',
+                defaultValue: '0',
+            };
+        }
+    }
 
     return reference ?? null;
 });

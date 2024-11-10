@@ -172,13 +172,47 @@ watch(aliases, () => {
     restartMarkdown();
 });
 
+function buildRefContent(value: string): [MaterialDescription | undefined, MaterialContent | null | undefined] {
+    const ref = props.material?.description[value];
+
+    if (!ref) {
+        if (value === 'index') {
+            const ref: MaterialDescription = {
+                name: 'index',
+                type: 'number',
+                defaultValue: '0',
+            };
+            const targetContent = props.content;
+            const content = {
+                index: (props.material?.contents.indexOf(targetContent!) ?? -1) + 1,
+            };
+
+            return [ref, content];
+        }
+
+        if (value === 'total') {
+            const ref: MaterialDescription = {
+                name: 'total',
+                type: 'number',
+                defaultValue: '0',
+            };
+            const content = {
+                total: props.material?.contents.length,
+            };
+
+            return [ref, content];
+        }
+    }
+
+    return [ref, props.content];
+}
+
 /* Regular expression to match `:ref<value>:` */
 const refPattern = /:ref<\s*([^:]+)\s*>:/gi;
 function replaceRef(value: string, insideToken = false) {
     const str = insideToken ? `:${value}:` : value;
     const result = str.replace(refPattern, (_pattern, value) => {
-        const ref = props.material?.description[value];
-        const content = props.content;
+        const [ref, content] = buildRefContent(value);
 
         return getRefValue(ref, content);
     });

@@ -32,7 +32,7 @@
             @change="onInputValue"
         >
             <option value=""></option>
-            <option v-for="attribute of props.materials.description"
+            <option v-for="attribute of referenceList"
                 :key="`reference-${uid}-${attribute.name}`"
                 :value="attribute.name"
             >
@@ -81,6 +81,24 @@ const valueType = ref<'StaticText' | 'StaticImage' | 'Reference'>('StaticText');
 const valueContent = ref<string>('');
 
 const uid = Math.random();
+
+const referenceList = computed<MaterialDescription[]>(() => {
+    const list = Object.values(props.materials.description);
+
+    list.push({
+        name: 'index',
+        type: 'number',
+        defaultValue: '0',
+    });
+
+    list.push({
+        name: 'total',
+        type: 'number',
+        defaultValue: '0',
+    });
+
+    return list;
+});
 
 watch(content, () => {
     const detail = content.value;
