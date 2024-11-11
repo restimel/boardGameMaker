@@ -33,7 +33,6 @@ const isTransparent = computed<boolean>(() => {
 
 function changeTransparent() {
     if (isTransparent.value) {
-        console.log('remove transparent', colorModel.value, color.value);
         colorModel.value = color.value;
         return;
     }

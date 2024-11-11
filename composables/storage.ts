@@ -9,7 +9,7 @@ export async function loadStorage(name: string, wait = 0): Promise<object | null
 
             return loadStorage(name, wait - 1);
         } else {
-            console.info('Still on server side, :(');
+            console.warn('Still on server side, :(');
         }
     }
 

@@ -58,7 +58,7 @@ watch(image, () => {
 });
 
 const maxSize = 500 * 1024;
-function onFileChange(event: InputEvent) {
+function onFileChange(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     const file = element.files?.[0];
 

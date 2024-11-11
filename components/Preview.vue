@@ -1,5 +1,7 @@
 <template>
-    <div v-if="props.material.type === 'Cards'">
+    <div v-if="props.material.type === 'Cards'"
+        class="card-preview"
+    >
         <InputRadio v-if="!props.readonly"
             :values="[{
                 label: 'Front',
@@ -30,6 +32,11 @@ const side = ref<'front' | 'back'>('front');
 
 </script>
 <style scoped>
+
+.card-preview {
+    display: flex;
+    flex-direction: column;
+}
 
 .preview-material {
     box-shadow: 0 0 3px var(--text-color);
