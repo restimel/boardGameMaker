@@ -30,7 +30,7 @@
             :key="`inputContent-${enumeration.id}`"
             :value="enumeration.value"
         >
-            {{ enumeration.value }}
+            {{ enumeration.key }} → {{ enumeration.value }}
         </option>
     </select>
     <input v-else

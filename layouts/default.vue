@@ -37,13 +37,24 @@
             </menu>
         </header>
         <main class="page">
-            <slot />
+            <ClientOnly>
+                <slot v-if="ready" />
+                <p v-else
+                    class="loading"
+                >
+                    Loading...
+                </p>
+
+                <template #fallback>
+                    <p class="loading">Loading...</p>
+                </template>
+            </ClientOnly>
         </main>
     </section>
 </template>
 <script setup lang="ts">
 
-import { saveProject, isChanged } from '~/stores/project';
+import { saveProject, isChanged, ready } from '~/stores/project';
 
 const route = useRoute();
 

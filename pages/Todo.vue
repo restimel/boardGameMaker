@@ -27,9 +27,12 @@ const value = `
 ### Material
 
 * [ ] allow to use enum in color
+* [ ] allow to repeat materials contents looping on enum
+* [ ] import/export csv
 
 ## :exclamation: less important features
 
+* [ ] comments in project
 * [ ] clean up Formats
 * [ ] draw shape circle
 * [x] references: index & total
@@ -42,9 +45,9 @@ const value = `
 
 ## :bug: Bugs
 
-* [ ] when refreshing the active project is the first instead of the previous one
-* [ ] hydratation (be nuxt ready)
-* [ ] at start isChanged is false but buttons are enabled
+* [x] when refreshing the active project is the first instead of the previous one
+* [x] hydratation (be nuxt ready)
+* [x] at start isChanged is false but buttons are enabled
 
 `;
 

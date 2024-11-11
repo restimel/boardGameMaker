@@ -1,5 +1,4 @@
 import { computed, ref, watch } from 'vue';
-import nuxtStorage from 'nuxt-storage';
 
 const states: ProjectStates = {
     title: ref<string>('The project'),
@@ -26,6 +25,8 @@ const states: ProjectStates = {
     alias: ref<Record<string, Alias>>({}),
     enumerations: ref<Enumeration[]>([]),
 };
+
+export const ready = ref<boolean>(false);
 
 function reset() {
     const initStates: Project = {
@@ -117,18 +118,19 @@ export function saveProject(mode: 'new' | 'major' | 'minor' | 'build') {
 }
 
 export const isChanged = computed<boolean>(() => {
-    console.log('check isChanged');
     const version = states.version.value;
     const activeProject = currentProject.value;
     const projectVersion = activeProject.versions[version];
 
+    if (import.meta.server) {
+        return false;
+    }
+
     if (!projectVersion) {
-        console.log('no project version');
         return true;
     }
 
     if (states.title.value !== activeProject.title) {
-        console.log('title different', activeProject.title, states.title.value);
         return true;
     }
 
@@ -136,39 +138,31 @@ export const isChanged = computed<boolean>(() => {
         if (key in states) {
             const sKey = key as StatesKey;
             if (!objEqual(states[sKey].value, value)) {
-                console.log('changed:', sKey, value, states[sKey].value);
                 return true;
             }
         }
     }
 
-    console.log('no diff');
     return false;
 });
 
 watch(() => states, () => {
     const JSONState = Array.from(Object.entries(states)).reduce((jsStates, [key, value]) => {
-        if (key in jsStates) {
-            jsStates[key] = value.value;
-        }
+        jsStates[key] = value.value;
 
         return jsStates;
     }, {} as any);
-    const serialized = JSON.stringify(JSONState);
 
-    nuxtStorage.localStorage.setData('project', serialized, 30_000, 'd');
+    saveStorage('project', JSONState);
 }, { deep: true });
 
 watch(projects, () => {
-    const serialized = JSON.stringify(projects.value);
-
-    nuxtStorage.localStorage.setData('projects', serialized, 30_000, 'd');
+    saveStorage('projects', projects.value);
 }, { deep: true });
 
 export function setActiveProjectVersion(id: string, version: string, forceChange = false) {
-    console.log('setActiveProjectverison', id, version);
     if (!forceChange && isChanged.value) {
-        confirmDialog(`There are some change that are not saved.
+        confirmDialog(`There are some changes that are not saved.
 They will be lost if you change to another project.
 
 **Are you sure to continue** and losing these changes?
@@ -185,7 +179,6 @@ They will be lost if you change to another project.
         const activeProject = projects.value.find((pjt) => pjt.id === id);
 
         if (!activeProject) {
-            console.log('no active project')
             return false;
         }
 
@@ -242,29 +235,22 @@ function loadProjects(projectList: Projects) {
     }
 }
 
-function load() {
-    const strValues = nuxtStorage.localStorage.getData('project');
-    const strProjectsValues = nuxtStorage.localStorage.getData('projects');
+async function load() {
+    const [project, projects] = await Promise.all([
+        loadStorage('project', 10),
+        loadStorage('projects', 10),
+    ]);
 
-    if (strValues) {
-        try {
-            const values = JSON.parse(strValues);
-
-            loadProject(values);
-        } catch(err) {
-            console.warn('Failed to parse localStorage', err);
-        }
+    if (project) {
+        loadProject(project as Project);
     }
 
-    if (strProjectsValues) {
-        try {
-            const values = JSON.parse(strProjectsValues);
 
-            loadProjects(values);
-        } catch(err) {
-            console.warn('Failed to parse localStorage', err);
-        }
+    if (projects) {
+        loadProjects(projects as Projects);
     }
+
+    ready.value = true;
 }
 
 load();
