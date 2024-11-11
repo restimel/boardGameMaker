@@ -2,13 +2,15 @@
     <section>
         <header>
             <nav>
-                <NuxtLink to="/projects">Projects</NuxtLink>
-                <NuxtLink to="/project">Project</NuxtLink>
-                <NuxtLink to="/summary">Overview</NuxtLink>
-                <NuxtLink to="/rules">Rules</NuxtLink>
-                <NuxtLink to="/materials">Materials</NuxtLink>
-                <NuxtLink to="/alias">Alias & Enumeration</NuxtLink>
-                <NuxtLink to="/help">❔</NuxtLink>
+                <NuxtLink v-for="menuItem of menuList"
+                    :key="`header-menu-${menuItem.to}`"
+                    :to="menuItem.to"
+                    :class="{
+                        active: menuItem.active(),
+                    }"
+                >
+                    {{ menuItem.title }}
+                </NuxtLink>
             </nav>
             <menu>
                 <button
@@ -42,6 +44,49 @@
 <script setup lang="ts">
 
 import { saveProject, isChanged } from '~/stores/project';
+
+const route = useRoute();
+
+const menuList = computed(() => {
+    return [{
+        to: '/project',
+        title: 'Project',
+        active: () => {
+            /* include project and projects */
+            return route.path.startsWith('/project');
+        },
+    }, {
+        to: '/summary',
+        title: 'Summary',
+        active: () => {
+            return false;
+        },
+    }, {
+        to: '/rules',
+        title: 'Rules',
+        active: () => {
+            return false;
+        },
+    }, {
+        to: '/materials',
+        title: 'Materials',
+        active: () => {
+            return route.path.startsWith('/material');
+        },
+    }, {
+        to: '/alias',
+        title: 'Alias & Enumeration',
+        active: () => {
+            return false;
+        },
+    }, {
+        to: '/help',
+        title: '❔',
+        active: () => {
+            return false;
+        },
+    }];
+});
 
 </script>
 <style scoped>
@@ -85,7 +130,7 @@ import { saveProject, isChanged } from '~/stores/project';
         color: var(--active-color);
     }
 
-    nav > *.router-link-active {
+    nav > :is(.router-link-active, .active) {
         border-color: var(--active-color);
     }
 

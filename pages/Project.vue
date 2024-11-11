@@ -2,6 +2,10 @@
     <div>
         <h1>Project</h1>
 
+        <p>
+            <NuxtLink to="/projects">Change project</NuxtLink>
+        </p>
+
         <section class="form">
             <label>
                 Title:
