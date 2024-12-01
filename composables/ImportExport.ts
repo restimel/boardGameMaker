@@ -22,20 +22,17 @@ export function exportToCSV(data: object[], filename = 'boardGameMaker.csv') {
     download(csvData, 'text/csv', name);
 }
 
-function parseCSVrow(row: string): Array<string | number> {
-    const values = row.split(/("(?:\\.|[^\\"]+)*?"|[^";,]*?)[;,]/g);
+export function exportToJSON(data: object, filename = 'boardGameMaker.json'): string {
+    try {
+        const jsonData = convertToJSON(data);
+        const name = filename.endsWith('.json') ? filename : `${filename}.json`;
 
-    return values.map((value) => {
-        if (!value) {
-            return '';
-        }
+        download(jsonData, 'text/json', name);
+    } catch (err) {
+        return (err as Error).message;
+    }
 
-        if (!value.startsWith('"') && !/^[-+\d.]+/.test(value)) {
-            return value;
-        }
-
-        return JSON.parse(value);
-    });
+    return '';
 }
 
 export function importFromCSV(text: string): object[] | string {
@@ -67,6 +64,16 @@ export function importFromCSV(text: string): object[] | string {
     }
 }
 
+export function importFromJSON(text: string): object | string {
+    try {
+        const value = JSON.parse(text);
+
+        return value;
+    } catch (err) {
+        return (err as Error).message;
+    }
+}
+
 function convertToCSV(data: object[]): string {
     /* Extract all keys from objects */
     const keys = Array.from(new Set(data.flatMap(Object.keys)));
@@ -85,4 +92,24 @@ function convertToCSV(data: object[]): string {
     ];
 
     return csvRows.join('\n');
+}
+
+function convertToJSON(data: object): string {
+    return JSON.stringify(data, undefined, '  ');
+}
+
+function parseCSVrow(row: string): Array<string | number> {
+    const values = row.split(/("(?:\\.|[^\\"]+)*?"|[^";,]*?)[;,]/g);
+
+    return values.map((value) => {
+        if (!value) {
+            return '';
+        }
+
+        if (!value.startsWith('"') && !/^[-+\d.]+/.test(value)) {
+            return value;
+        }
+
+        return JSON.parse(value);
+    });
 }

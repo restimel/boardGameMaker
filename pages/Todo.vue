@@ -16,8 +16,9 @@ const value = `
 * [x] can select between different project
     * [ ] What happen when save minor/major/build when not on last?
     * [x] Should confirm to drop changes when changing to a version (and there are changes)
-* [ ] import/export project
-    * [ ] import: check that project/version does not already exist and ask to override/skip
+* [x] import/export project
+    * [x] import: check that project/version does not already exist and ask to override/skip
+    * [ ] match on name, on id or on current project
 
 ### Print
 

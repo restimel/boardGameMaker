@@ -35,7 +35,7 @@
 </template>
 <script lang="ts" setup>
 type Props = {
-    fileType: 'CSV';
+    fileType: 'CSV' | 'JSON';
     exportOptions?: {
         name?: string;
         content: object;
@@ -44,7 +44,7 @@ type Props = {
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
-    (e: 'import', value: any[]): void;
+    (e: 'import', value: any): void;
 }>();
 
 const error = ref<string>('');
@@ -54,6 +54,8 @@ const acceptMIME = computed<string>(() => {
     switch (props.fileType) {
         case 'CSV':
             return 'text/csv';
+        case 'JSON':
+            return 'app/json';
     }
 });
 
@@ -80,14 +82,14 @@ function handleDrop(event: DragEvent) {
     }
 };
 
-function exportFile(event: MouseEvent) {
+function exportFile(event: MouseEvent): boolean {
     const exportOptions = props.exportOptions;
     const element = event.currentTarget as HTMLButtonElement;
 
     if (!exportOptions) {
         element.setCustomValidity('No options available');
         element.reportValidity();
-        return;
+        return false;
     }
 
     element.setCustomValidity('');
@@ -99,11 +101,28 @@ function exportFile(event: MouseEvent) {
             if (!Array.isArray(content)) {
                 element.setCustomValidity('Data are not valid');
                 element.reportValidity();
-                return;
+                return false;
             }
 
             exportToCSV(content, exportOptions.name);
-            return;
+            return true;
+
+        case 'JSON':
+            if (typeof content !== 'object') {
+                element.setCustomValidity('Data are not valid');
+                element.reportValidity();
+                return false;
+            }
+
+            const result = exportToJSON(content, exportOptions.name);
+
+            if (result) {
+                element.setCustomValidity(result);
+                element.reportValidity();
+                return false;
+            }
+
+            return true;
     }
 }
 
@@ -115,11 +134,15 @@ function importFile(file: File) {
         const text = evt.target?.result;
 
         if (text) {
-            let values: any[] | string;
+            let values: object |  object[] | string;
 
             switch (props.fileType) {
                 case 'CSV':
                     values = importFromCSV(String(text));
+                    break;
+                case 'JSON':
+                    values = importFromJSON(String(text));
+                    break;
             }
 
             if (typeof values === 'string') {

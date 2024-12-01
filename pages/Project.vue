@@ -1,6 +1,11 @@
 <template>
     <div>
-        <h1>Project</h1>
+        <h1>
+            Project
+            <br>
+            <sub>{{ project.version }}.{{ project.buildVersion }}</sub>
+        </h1>
+
 
         <p>
             <NuxtLink to="/projects">Change project</NuxtLink>
@@ -37,13 +42,43 @@
         <p>
             Nb of players: <Text class="inline-text" :value="project.players.value" />
         </p>
+
+        <hr>
+        <h2>Managements</h2>
+
+        <ImportFile
+            file-type="JSON"
+            :export-options="{
+                name: project.title.value,
+                content: jsonProject,
+            }"
+            @import="importFile"
+        />
     </div>
 </template>
 <script setup lang="ts">
 
-import projectStore from '~/stores/project';
+import projectStore, { importProject } from '~/stores/project';
 
 const project = projectStore();
+
+const jsonProject = computed<StateExtended>(() => {
+    const states: StateExtended = Object.entries(project).reduce((states, [key, value]) => {
+        (states as any)[key] = value.value;
+
+        return states;
+    }, {} as StateExtended);
+
+    return states;
+});
+
+async function importFile(data: StateProject) {
+    const result = await importProject(data);
+
+    if (result) {
+        console.log('imported', project.version.value, project.buildVersion.value);
+    }
+}
 
 </script>
 <style scoped>

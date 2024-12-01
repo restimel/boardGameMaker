@@ -139,14 +139,20 @@ type Project = {
     enumerations: Enumeration[];
 };
 
+type StateExtended = {
+    title: string;
+    /** Gameproject id */
+    id: string;
+    version: string;
+};
+
+type StateProject = Project & StateExtended;
+
 type StatesKey = keyof Project;
 type ProjectStates = {
     [Key in StatesKey]: Ref<Project[Key]>;
 } & {
-    title: Ref<string>;
-    /** Gameproject id */
-    id: Ref<string>;
-    version: Ref<string>;
+    [Key in keyof StateExtended]: Ref<StateExtended[Key]>;
 };
 
 type GameProject = {

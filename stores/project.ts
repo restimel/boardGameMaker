@@ -59,14 +59,24 @@ export const currentProject = ref<GameProject>(createProject(''));
 
 export const projects = ref<Projects>([]);
 
-export function saveProject(mode: 'new' | 'major' | 'minor' | 'build') {
+export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', version = ''): GameProject {
     let [major, minor, build] = getLastVersion(currentProject.value);
+
+    if (version) {
+        const versionArr = version.split('.');
+
+        major = +versionArr[0] || 0;
+        minor = +versionArr[1] || 0;
+        build = +versionArr[2] || 0;
+    }
 
     switch (mode) {
         case 'new':
-            major = 1;
-            minor = 0;
-            build = 0;
+            if (!version) {
+                major = 1;
+                minor = 0;
+                build = 0;
+            }
             break;
         case 'major':
             major = major + 1;
@@ -79,6 +89,8 @@ export function saveProject(mode: 'new' | 'major' | 'minor' | 'build') {
             break;
         case 'build':
             build = build + 1;
+            break;
+        case 'same':
             break;
     }
 
@@ -160,19 +172,21 @@ watch(projects, () => {
     saveStorage('projects', projects.value);
 }, { deep: true });
 
-export function setActiveProjectVersion(id: string, version: string, forceChange = false) {
+export function setActiveProjectVersion(id: string, version: string, forceChange = false): boolean | Promise<boolean> {
     if (!forceChange && isChanged.value) {
-        confirmDialog(`There are some changes that are not saved.
+        const promise = confirmDialog(`There are some changes that are not saved.
 They will be lost if you change to another project.
 
 **Are you sure to continue** and losing these changes?
 `).then((confirm) => {
             if (confirm) {
-                setActiveProjectVersion(id, version, true);
+                return setActiveProjectVersion(id, version, true);
             }
+
+            return false;
         });
 
-        return;
+        return promise;
     }
 
     if (currentProject.value.id !== id) {
@@ -196,6 +210,50 @@ They will be lost if you change to another project.
     if (activeVersion) {
         loadProject(activeVersion);
     }
+
+    return true;
+}
+
+export async function importProject(data: StateProject): Promise<boolean> {
+    if (isChanged.value) {
+        const result = await confirmDialog(`There are some changes that are not saved.
+They will be lost if you import another project.
+
+**Are you sure to continue** and losing these changes?
+`);
+
+        if (!result) {
+            return false;
+        }
+    }
+
+    loadProject(data);
+
+    const id = data.id;
+    const version = data.version + '.' + data.buildVersion
+
+    if (currentProject.value.id !== id) {
+        let activeProject = projects.value.find((pjt) => pjt.id === id);
+
+        if (!activeProject) {
+            saveProject('new', version);
+
+            return true;
+        }
+
+        currentProject.value = activeProject;
+    }
+
+    let sameOperation = true;
+
+    if (data.version in currentProject.value.versions) {
+        sameOperation = await confirmDialog(`The version "${data.version}" already exist.
+
+Do you want to **override** it or to create a new minor version (_cancel_)?
+`);
+    }
+
+    saveProject(sameOperation ? 'same' : 'minor', version);
 
     return true;
 }
