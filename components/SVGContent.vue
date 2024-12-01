@@ -1,5 +1,8 @@
 <template>
-    <g v-if="type === 'Text'">
+    <g v-if="type === 'Text'"
+        :style="`--rotation: ${detail.rotation}deg;`"
+        class="layer"
+    >
         <rect
             :x="detail.position[0] * px"
             :y="detail.position[1] * px"
@@ -26,7 +29,10 @@
             </div>
         </foreignObject>
     </g>
-    <g v-else-if="type === 'Image'">
+    <g v-else-if="type === 'Image'"
+        :style="`--rotation: ${detail.rotation}deg;`"
+        class="layer"
+    >
         <rect
             :x="detail.position[0] * px"
             :y="detail.position[1] * px"
@@ -171,6 +177,12 @@ const descRef = computed<MaterialDescription | null>(() => {
     margin: 0;
     user-select: none;
     text-align: var(--text-alignment);
+}
+
+.layer {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(var(--rotation, 0));
 }
 
 </style>

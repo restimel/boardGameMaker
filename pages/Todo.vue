@@ -51,6 +51,9 @@ const value = `
 * [x] at start isChanged is false but buttons are enabled
 * [ ] allow to have empty default text value
 
+
+* [ ] change dimension with rotation
+* [X] rotation when height is less than 100
 `;
 
 </script>

@@ -13,8 +13,17 @@ type Dimension = [number, number];
 /** [x, y] in mm */
 type Position = [number, number];
 
-/** x, y, width, height */
+/* [x, y] in any unit */
+type Point = [number, number];
+
+/** [0, 360] deg */
+type Angle = number;
+
+/** [x, y, width, height] */
 type Rectangle = [number, number, number, number];
+
+/** [x, y, width, height, rotation] */
+type RotationRectangle = [number, number, number, number, number];
 
 type CardFormat = {
     name: string;
@@ -55,6 +64,7 @@ type MetaMaterial = {
     name: string;
     dimension: Dimension;
     position: Position;
+    rotation: Angle;
     content: MetaContent;
 
     color: string; /* TODO: To remove (replace by content.color) */

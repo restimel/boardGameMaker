@@ -9,7 +9,7 @@
         >
         <output>
             {{ value }}
-            <span class="unit">mm</span>
+            <span class="unit">{{ props.unit ?? 'mm' }}</span>
         </output>
     </span>
 </template>
@@ -18,6 +18,7 @@ type Props = {
     min?: number;
     max?: number;
     step?: number;
+    unit?: string;
 };
 
 const props = defineProps<Props>();

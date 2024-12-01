@@ -62,6 +62,16 @@
                     <InputColor label="Background color" v-model="layer.bgColor" />
                     <InputTuple label="Position" v-model="layer.position" separator="," :precision="2" />
                     <InputTuple label="Dimension" v-model="layer.dimension" separator="×" :precision="2" />
+                    <label>
+                        Rotation:
+                        <InputRange
+                            v-model="layer.rotation"
+                            :min="0"
+                            :max="360"
+                            :step="1"
+                            unit="degree"
+                        />
+                    </label>
                     <InputReference label="Content" :materials="material" v-model="layer.content" />
                 </section>
             </div>
@@ -78,7 +88,7 @@ const props = defineProps<Props>();
 const material: Ref<MaterialCard> = defineModel<MaterialCard>() as any;
 
 const layerActive = ref<string>('');
-const rectangle = ref<Rectangle | boolean>(false);
+const rectangle = ref<RotationRectangle | boolean>(false);
 
 const details = computed<MetaMaterial[]>(() => {
     if (props.back) {
@@ -117,16 +127,17 @@ watch(layer, () => {
 
     const [x, y] = activeLayer.position;
     const [w, h] = activeLayer.dimension;
+    const r = activeLayer.rotation;
 
-    rectangle.value = [x, y, w, h];
+    rectangle.value = [x, y, w, h, r];
 }, { deep: true });
 
 function addLayer() {
     rectangle.value = true;
 }
 
-function updateRectangle(rect: Rectangle) {
-    const [x, y, w, h] = rect;
+function updateRectangle(rect: RotationRectangle) {
+    const [x, y, w, h, r] = rect;
 
     if (creatingLayer.value) {
         return;
@@ -135,11 +146,12 @@ function updateRectangle(rect: Rectangle) {
     const layerValue = layer.value!;
     layerValue.position = [x, y];
     layerValue.dimension = [w, h];
+    layerValue.rotation = r;
 }
 
-function endRectangle(rect: Rectangle) {
+function endRectangle(rect: RotationRectangle) {
     if (creatingLayer.value) {
-        const [x, y, w, h] = rect;
+        const [x, y, w, h, r] = rect;
         const id = 'new layer ' + details.value.length;
 
         const layerDetail: MetaMaterial = {
@@ -148,10 +160,11 @@ function endRectangle(rect: Rectangle) {
             name: id,
             position: [x, y],
             dimension: [w, h],
+            rotation: r,
             content: {
                 type: 'StaticText',
                 value: '',
-                size: getDefaultTextSize(rect),
+                size: getDefaultTextSize(rect.slice(0, 4) as Rectangle),
                 alignment: 'center',
                 color: getDefaultMaterialTextColor(),
             },
