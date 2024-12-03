@@ -29,6 +29,11 @@ const emit = defineEmits<{
 
 const internalValue = ref<number>(value.value ?? 0);
 
+watch (value, () => {
+    const val = value.value;
+    internalValue.value = val ?? 0;
+});
+
 watch (internalValue, () => {
     value.value = +internalValue.value;
     change();
