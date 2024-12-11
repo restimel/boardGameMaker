@@ -14,6 +14,12 @@
         >
             {{ enumeration[1] }}
         </option>
+        <option v-for="enumeration of enumerationLoopList"
+            :key="enumeration[0]"
+            :value="enumeration[0]"
+        >
+            {{ enumeration[1] }}
+        </option>
     </select>
 </template>
 <script setup lang="ts">
@@ -42,7 +48,22 @@ const enumerationList = computed<[string, string][]>(() => {
     return enums.map((enumeration) => {
         return [
             `enumeration:${enumeration.id}`,
-            `Enumeration: ${enumeration.name}`
+            `Enumeration: ${enumeration.name}`,
+        ] as [string, string];
+    });
+});
+
+const enumerationLoopList = computed<[string, string][]>(() => {
+    if (!props.withEnumeration) {
+        return [];
+    }
+
+    const enums = project.enumerations.value;
+
+    return enums.map((enumeration) => {
+        return [
+            `enumeration-loop:${enumeration.id}`,
+            `Every values of enumeration: ${enumeration.name} (×${enumeration.values.length})`,
         ] as [string, string];
     });
 });

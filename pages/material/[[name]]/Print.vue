@@ -2,10 +2,11 @@
     <div v-if="material"
         class="print-material"
     >
-        <Preview v-for="(content, index) in material.contents"
+        <Preview v-for="(item, index) in contents"
             :key="`material-${name}-${index}`"
             :material="material"
-            :content="content"
+            :content="item.content"
+            :context="item.context"
             readonly
         />
     </div>
@@ -19,7 +20,12 @@
 
 import { computed } from 'vue';
 import Preview from '~/components/Preview.vue';
-import projectStore from '~/stores/project';
+import projectStore, {getCurrentProject} from '~/stores/project';
+
+type Content = {
+    content: MaterialContent;
+    context: MaterialContext;
+};
 
 const project = projectStore();
 const route = useRoute();
@@ -29,6 +35,20 @@ const material = computed<Material>(() => {
     const projectMaterial = project.materials.value.find((item) => item.name === name) as Material;
 
     return projectMaterial;
+});
+
+const contents = computed<Content[]>(() => {
+    const contents = material.value.contents;
+    const contexts = createAllContext(getCurrentProject(), material.value.description);
+
+    return contexts.flatMap((context) => {
+        return contents.map((content) => {
+            return {
+                content: content,
+                context: context,
+            };
+        });
+    });
 });
 
 </script>

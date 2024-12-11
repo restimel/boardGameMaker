@@ -1,29 +1,20 @@
 
 type EnumerationType = `enumeration:${string}`;
+type EnumerationLoopType = `enumeration-loop:${string}`;
 type MaterialType = 'Cards' | 'Dice';
 type MaterialPart = 'Box' | 'Image';
-type DescriptionType = 'text' | 'number' | 'image' | 'color' | EnumerationType;
+type DescriptionType = 'text' | 'number' | 'image' | 'color'
+    | EnumerationType | EnumerationLoopType;
 
-/** [major, minor, variation] */
-type Version = [number, number, number];
+type MaterialContext = {
+    /** The current loop context.
+     *
+     * { enumId: keyId }
+     */
+    loop: Record<string, string>;
 
-/** [x, y] in mm */
-type Dimension = [number, number];
-
-/** [x, y] in mm */
-type Position = [number, number];
-
-/* [x, y] in any unit */
-type Point = [number, number];
-
-/** [0, 360] deg */
-type Angle = number;
-
-/** [x, y, width, height] */
-type Rectangle = [number, number, number, number];
-
-/** [x, y, width, height, rotation] */
-type RotationRectangle = [number, number, number, number, number];
+    project: Project;
+}
 
 type CardFormat = {
     name: string;
@@ -77,11 +68,13 @@ type MaterialDescription = {
     defaultValue: string;
 };
 
+type MaterialDescriptions = Record<string, MaterialDescription>;
+
 type MaterialBase = {
     name: string;
     type: MaterialType;
 
-    description: Record<string, MaterialDescription>;
+    description: MaterialDescriptions;
     contents: Array<MaterialContent>;
 };
 

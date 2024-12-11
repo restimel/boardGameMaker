@@ -59,6 +59,7 @@ type Props = {
     px: number;
     material: Material;
     content?: MaterialContent | null;
+    context?: MaterialContext;
 };
 
 const props = defineProps<Props>();
@@ -126,7 +127,7 @@ const value = computed<string>(() => {
     switch (contentType) {
         case 'StaticText': return contentValue;
         case 'StaticImage': return contentValue;
-        case 'Reference': return getRefValue(descRef.value, extendedContent.value);
+        case 'Reference': return getRefValue(descRef.value, extendedContent.value, props.context);
     }
 
     console.warn('type not managed yet :(', contentType);

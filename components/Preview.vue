@@ -17,6 +17,7 @@
             :material="props.material"
             :content="props.content"
             :back="side === 'back'"
+            :context="context"
         />
     </div>
 </template>
@@ -25,6 +26,7 @@ type Props = {
     material: Material;
     content: MaterialContent | null;
     readonly?: boolean;
+    context: MaterialContext;
 };
 
 const props = defineProps<Props>();

@@ -32,7 +32,7 @@
                         {{ material.name }}
                     </span>:
                     <span class="material-quantity">
-                        {{ material.contents.length + ' ' + material.type.toLocaleLowerCase() }}
+                        {{ numberMaterial(material) + ' ' + material.type.toLocaleLowerCase() }}
                     </span>
                 </NuxtLink>
             </li>
@@ -53,9 +53,21 @@
     </div>
 </template>
 <script setup lang="ts">
-import projectStore from '~/stores/project';
+import projectStore, { getCurrentProject } from '~/stores/project';
 
 const project = projectStore();
+
+const currentProject = computed(() => {
+    return getCurrentProject();
+})
+
+function numberMaterial(material: Material): number {
+    const length = material.contents.length;
+    const allContexts = createAllContext(currentProject.value, material.description).length;
+
+    return length * allContexts;
+}
+
 </script>
 <style scoped>
 .material-name {

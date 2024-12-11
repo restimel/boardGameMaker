@@ -28,7 +28,7 @@ const value = `
 ### Material
 
 * [ ] allow to use enum in color
-* [ ] allow to repeat materials contents looping on enum
+* [x] allow to repeat materials contents looping on enum
 * [x] import/export csv
 
 ## :exclamation: less important features

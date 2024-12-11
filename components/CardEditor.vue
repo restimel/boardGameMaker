@@ -8,6 +8,7 @@
                 :back="back"
                 :rectangle="rectangle"
                 :content="material.contents[0]"
+                :context="context"
 
                 @rectangle="updateRectangle"
                 @rectangle-end="endRectangle"
@@ -82,6 +83,7 @@
 
 type Props = {
     back?: boolean;
+    project: Project;
 };
 
 const props = defineProps<Props>();
@@ -112,6 +114,13 @@ const layer = computed(() => {
 
 const creatingLayer = computed<boolean>(() => {
     return rectangle.value === true;
+});
+
+const context = computed<MaterialContext>(() => {
+    const project = props.project;
+    const descriptions = material.value.description;
+
+    return createContext(project, descriptions);
 });
 
 watch(layer, () => {

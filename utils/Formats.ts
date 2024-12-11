@@ -131,7 +131,7 @@ export function formatValue(value: ContentValue, type: DescriptionType): string 
         }
 
         default:
-            /* case Enumeration */
+            /* case Enumeration or Enumeration-loop */
             return '';
     }
 }
@@ -148,12 +148,32 @@ export function getDefaultValue(type: DescriptionType, defaultTextValue = '⚠�
     }
 }
 
-export function getRefValue(ref?: MaterialDescription | null, content?: MaterialContent | null): string {
+export function getRefValue(ref?: MaterialDescription | null, content?: MaterialContent | null, ctx?: MaterialContext): string {
     const type = ref?.type;
     const property = ref?.name ?? '';
 
     if (typeof type === 'undefined') {
         return `⚠️<${property || 'no ref'}>`;
+    }
+
+    if (isEnumLoop(type)) {
+        const enumId = extractEnumLoopId(type);
+
+        if (!ctx) {
+            return formatValue(ref?.defaultValue || `<loop on ${enumId}>`, 'text')
+        }
+
+        const enumerations = ctx.project.enumerations;
+        const enumeration = getEnum(enumerations, enumId, 'id');
+        const enumKey = ctx.loop[enumId];
+        const enumType = enumeration?.type;
+
+        if (!enumKey) {
+            return `<⚠️ unknown key ${enumId}>`;
+        }
+
+        const value = getEnumValue(enumeration, enumKey);
+        return formatValue(value, enumType ?? type);
     }
 
     const propValue = content?.[property];
@@ -174,29 +194,95 @@ export function getRefValue(ref?: MaterialDescription | null, content?: Material
     return getDefaultValue(type, property);
 }
 
-export function getEnum(enumerations: Enumeration[], name: string, prop: 'id' | 'name' = 'name'): Enumeration | null {
-    return enumerations.find((enumeration) => enumeration[prop] === name) ?? null;
+export function getLoopAttributes(descriptions: MaterialDescriptions): MaterialDescription[] {
+    const attributes = Object.values(descriptions).filter((attribute) => {
+        return isEnumLoop(attribute.type);
+    })
+
+    return attributes;
 }
 
-export function getEnumValue(enumeration: Enumeration | null, key: string): string {
-    if (!enumeration) {
-        return '⚠️<no enumeration>';
-    }
+export function createContext(project: Project, descriptions: MaterialDescriptions): MaterialContext {
+    const loop: Record<string, string> = {};
+    const enumerations = project.enumerations;
 
-    const enumKeyValue = enumeration.values.find((enumValue) => enumValue.key === key);
-    const type = enumeration.type;
+    getLoopAttributes(descriptions).forEach((attribute) => {
+        const enumId = extractEnumLoopId(attribute.type);
+        const enumeration = getEnum(enumerations, enumId, 'id');
 
-    if (!enumKeyValue) {
-        const defaultValue = enumeration.defaultValue;
+        if (enumeration) {
+            loop[enumId] = enumeration.values[0].key;
+        }
+    });
 
-        if (typeof defaultValue === 'undefined' || defaultValue === '') {
-            return getDefaultValue(type, `${enumeration.name}, ${key}`);
+    return {
+        loop: loop,
+        project: project,
+    };
+}
+
+function contextCombination(loops: Map<string, string[]>) {
+    const keys = Array.from(loops.keys());
+    const indexes = keys.map(() => 0);
+    const keyLength = keys.length - 1;
+    const list = [];
+
+    function increment(idx: number) {
+        const key = keys[idx];
+        const length = loops.get(key)?.length ?? 0;
+        const index = indexes[idx] + 1;
+
+        if (index < length) {
+            indexes[idx] = index;
+        } else {
+            if (idx > 0) {
+                indexes[idx] = 0;
+                return increment(idx - 1);
+            } else {
+                return false;
+            }
         }
 
-        return formatValue(defaultValue, type);
+        return true;
     }
 
-    return formatValue(enumKeyValue.value, type);
+    do {
+        const loopCtx = keys.reduce((ctx, key, idx) => {
+            const attrIdx = indexes[idx];
+            const value = loops.get(key)?.[attrIdx] ?? '';
+
+            ctx[key] = value;
+
+            return ctx;
+        }, {} as Record<string, string>);
+
+        list.push(loopCtx);
+    } while(increment(keyLength));
+
+    return list;
+}
+
+export function createAllContext(project: Project, descriptions: MaterialDescriptions): MaterialContext[] {
+    const loops: Map<string, string[]> = new Map();
+    const enumerations = project.enumerations;
+
+    getLoopAttributes(descriptions).forEach((attribute) => {
+        const enumId = extractEnumLoopId(attribute.type);
+        const enumeration = getEnum(enumerations, enumId, 'id');
+
+        if (enumeration) {
+            loops.set(enumId, enumeration.values.map((value) => value.key));
+        }
+    });
+
+    const contexts = contextCombination(loops).map((loop) => {
+        return {
+            loop: loop,
+            project: project,
+        };
+    });
+
+    return contexts;
 }
 
 export function createProject(name: string): GameProject {

@@ -76,6 +76,7 @@
             <Preview
                 :material="material"
                 :content="activeContent"
+                :context="context"
             />
         </div>
     </div>
@@ -91,6 +92,7 @@
 
 type Props = {
     material: Material;
+    project: Project;
 };
 
 const props = defineProps<Props>();
@@ -123,6 +125,13 @@ const exportOptions = computed(() => {
         name: `${name}.csv`,
         content: data,
     };
+});
+
+const context = computed<MaterialContext>(() => {
+    const project = props.project;
+    const descriptions = props.material.description;
+
+    return createContext(project, descriptions);
 });
 
 function addContent(propertyName: string, value: ContentValue) {

@@ -15,6 +15,7 @@
                 :px="px"
                 :material="material"
                 :content="content"
+                :context="context"
             />
         </template>
 
@@ -92,6 +93,7 @@ type Props = {
     material: MaterialCard;
     rectangle?: RotationRectangle | boolean;
     content?: MaterialContent | null;
+    context?: MaterialContext;
 };
 
 type MouseAction = 'none' | 'size' | 'move' | 'rotation';

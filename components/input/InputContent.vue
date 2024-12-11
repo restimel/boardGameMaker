@@ -26,13 +26,17 @@
         v-model="value"
         @change="change"
     >
-        <option v-for="enumeration of (getEnum(project.enumerations.value, type.slice(12), 'id')?.values ?? [])"
+        <option v-for="enumeration of (getEnum(project.enumerations.value, enumId, 'id')?.values ?? [])"
             :key="`inputContent-${enumeration.id}`"
             :value="enumeration.value"
         >
             {{ enumeration.key }} → {{ enumeration.value }}
         </option>
     </select>
+    <span v-else-if="type.startsWith('enumeration-loop:')"
+    >
+        Loop on the {{ getEnum(project.enumerations.value, enumId, 'id')?.values.length ?? 0 }} enumeration of {{ getEnum(project.enumerations.value, enumId, 'id')?.name }}
+    </span>
     <input v-else
         type="text"
         v-model="value"
@@ -60,6 +64,20 @@ const value = ref<ContentValue>(undefined);
 
 const type = computed<DescriptionType>(() => {
     return props.description.type;
+});
+
+const enumId = computed<string>(() => {
+    const typeValue = type.value;
+
+    if (typeValue.startsWith('enumeration:')) {
+        return typeValue.slice(12);
+    }
+
+    if (typeValue.startsWith('enumeration-loop:')) {
+        return typeValue.slice(17);
+    }
+
+    return '';
 });
 
 watch(valueModel, () => {

@@ -1,12 +1,15 @@
 <template>
     <div class="cards-editor">
-        <CardEditor v-model="material" />
-        <CardEditor v-model="material" back />
+        <CardEditor v-model="material" :project="project" />
+        <CardEditor v-model="material" :project="project" back />
     </div>
 </template>
 <script setup lang="ts">
 
+import { getCurrentProject } from '~/stores/project';
+
 const material: Ref<MaterialCard> = defineModel<MaterialCard>() as any;
+const project = getCurrentProject();
 
 </script>
 <style scoped>

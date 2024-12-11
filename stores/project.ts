@@ -129,6 +129,14 @@ export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', 
     return gameProject;
 }
 
+export function getCurrentProject(): Project {
+    return Array.from(Object.entries(states)).reduce((jsStates, [key, value]) => {
+        (jsStates as any)[key] = value.value;
+
+        return jsStates;
+    }, {} as Project);
+}
+
 export const isChanged = computed<boolean>(() => {
     const version = states.version.value;
     const activeProject = currentProject.value;

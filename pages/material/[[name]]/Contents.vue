@@ -10,6 +10,7 @@
         >
             <ContentList
                 :material="material"
+                :project="currentProject"
                 v-model="material.contents"
             />
         </div>
@@ -23,7 +24,7 @@
 <script setup lang="ts">
 
 import { computed } from 'vue';
-import projectStore from '~/stores/project';
+import projectStore, { getCurrentProject } from '~/stores/project';
 
 const project = projectStore();
 const route = useRoute();
@@ -33,6 +34,10 @@ const material = computed<Material>(() => {
     const projectMaterial = project.materials.value.find((item) => item.name === name) as Material;
 
     return projectMaterial;
+});
+
+const currentProject = computed(() => {
+    return getCurrentProject();
 });
 
 </script>
