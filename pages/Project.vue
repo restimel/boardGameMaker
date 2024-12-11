@@ -6,7 +6,6 @@
             <sub>{{ project.version }}.{{ project.buildVersion }}</sub>
         </h1>
 
-
         <p>
             <NuxtLink to="/projects">Change project</NuxtLink>
         </p>
@@ -58,7 +57,7 @@
 </template>
 <script setup lang="ts">
 
-import projectStore, { importProject } from '~/stores/project';
+import projectStore from '~/stores/project';
 
 const project = projectStore();
 

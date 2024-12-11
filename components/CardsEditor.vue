@@ -6,10 +6,8 @@
 </template>
 <script setup lang="ts">
 
-import { getCurrentProject } from '~/stores/project';
-
 const material: Ref<MaterialCard> = defineModel<MaterialCard>() as any;
-const project = getCurrentProject();
+const project = activeProject;
 
 </script>
 <style scoped>

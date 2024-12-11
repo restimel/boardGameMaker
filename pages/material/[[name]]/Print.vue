@@ -20,7 +20,7 @@
 
 import { computed } from 'vue';
 import Preview from '~/components/Preview.vue';
-import projectStore, {getCurrentProject} from '~/stores/project';
+import projectStore from '~/stores/project';
 
 type Content = {
     content: MaterialContent;
@@ -39,7 +39,7 @@ const material = computed<Material>(() => {
 
 const contents = computed<Content[]>(() => {
     const contents = material.value.contents;
-    const contexts = createAllContext(getCurrentProject(), material.value.description);
+    const contexts = createAllContext(activeProject.value, material.value.description);
 
     return contexts.flatMap((context) => {
         return contents.map((content) => {

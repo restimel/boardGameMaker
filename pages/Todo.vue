@@ -12,6 +12,9 @@ const value = `
 
 ### Project
 
+* [ ] store architecture
+    * [x] split in smaller files
+    * [ ] remove project.ts
 * [x] project version
 * [x] can select between different project
     * [ ] What happen when save minor/major/build when not on last?
@@ -24,6 +27,8 @@ const value = `
 
 * [ ] layer for print (without header)
     * [ ] assert material is displayed entirely in a page
+    * [ ] _(minor)_ option to choose to display back (or not) of cards
+    * [ ] _(minor)_ possibility to print all
 
 ### Material
 
@@ -43,17 +48,20 @@ const value = `
     * [ ] print back + front
 * [ ] material: board
 * [ ] check when removing an item it is not used (for example attributes used in description)
+* [ ] remove existing layer
 
 ## :bug: Bugs
 
 * [x] when refreshing the active project is the first instead of the previous one
-* [x] hydratation (be nuxt ready)
+* [ ] hydratation (be nuxt ready)
+    * [ ] explore different storage system
 * [x] at start isChanged is false but buttons are enabled
 * [ ] allow to have empty default text value
 
-
 * [ ] change dimension with rotation
 * [X] rotation when height is less than 100
+
+* [ ] table: clicking on "+" should create item
 `;
 
 </script>

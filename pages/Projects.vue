@@ -93,11 +93,7 @@
 </template>
 <script setup lang="ts">
 
-import projectStore, {
-    projects,
-    currentProject,
-    setActiveProjectVersion,
-} from '../stores/project';
+import projectStore from '../stores/project';
 
 const project = projectStore();
 

@@ -15,21 +15,21 @@
             <menu>
                 <button
                     class="default-button"
-                    :disabled="!isChanged"
+                    :disabled="!projectIsChanged"
                     @click="saveProject('major')"
                 >
                     Save major
                 </button>
                 <button
                     class="default-button"
-                    :disabled="!isChanged"
+                    :disabled="!projectIsChanged"
                     @click="saveProject('minor')"
                 >
                     Save minor
                 </button>
                 <button
                     class="main-button"
-                    :disabled="!isChanged"
+                    :disabled="!projectIsChanged"
                     @click="saveProject('build')"
                 >
                     Save
@@ -53,8 +53,6 @@
     </section>
 </template>
 <script setup lang="ts">
-
-import { saveProject, isChanged, ready } from '~/stores/project';
 
 const route = useRoute();
 

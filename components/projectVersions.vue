@@ -35,10 +35,6 @@
 </template>
 <script setup lang="ts">
 
-import {
-    setActiveProjectVersion,
-} from '../stores/project';
-
 type Props = {
     project: GameProject;
     isActiveProject: boolean;

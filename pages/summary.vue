@@ -53,17 +53,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import projectStore, { getCurrentProject } from '~/stores/project';
+import projectStore from '~/stores/project';
 
 const project = projectStore();
 
-const currentProject = computed(() => {
-    return getCurrentProject();
-})
-
 function numberMaterial(material: Material): number {
     const length = material.contents.length;
-    const allContexts = createAllContext(currentProject.value, material.description).length;
+    const allContexts = createAllContext(activeProject.value, material.description).length;
 
     return length * allContexts;
 }

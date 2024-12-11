@@ -138,7 +138,7 @@
             <h4>Content</h4>
             <ContentList
                 :material="material"
-                :project="currentProject"
+                :project="activeProject"
                 v-model="material.contents"
             />
         </div>
@@ -162,7 +162,7 @@
 import { computed, ref, watch } from 'vue';
 import CardSettings from '~/components/CardSettings.vue';
 import DiceSettings from '~/components/DiceSettings.vue';
-import projectStore, { getCurrentProject } from '~/stores/project';
+import projectStore from '~/stores/project';
 
 const DEBOUNCE_ATTRIBUTE = 1000;
 
@@ -210,10 +210,6 @@ const pageTitle = computed<string>(() => {
 
 const canCreate = computed<boolean>(() => {
     return !!material.value.name;
-});
-
-const currentProject = computed(() => {
-    return getCurrentProject();
 });
 
 watch(material, () => {
