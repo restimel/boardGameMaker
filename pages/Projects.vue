@@ -3,8 +3,8 @@
         <h1>Project list</h1>
 
         <p>
-            The current active project is "{{ project.title }}"
-            <sub>{{ project.version.value + '.' + project.buildVersion.value }}</sub>
+            The current active project is "{{ activeProject.title }}"
+            <sub>{{ activeProject.version + '.' + activeProject.buildVersion }}</sub>
         </p>
 
         <table class="table-list project-list">
@@ -82,8 +82,8 @@
         >
             <ProjectVersions v-if="details"
                 :project="details"
-                :isActiveProject="details.id === project.id.value"
-                :activeVersion="project.version.value"
+                :isActiveProject="details.id === activeProject.id"
+                :activeVersion="activeProject.version"
             />
             <button @click="details = null">
                 Close
@@ -93,20 +93,17 @@
 </template>
 <script setup lang="ts">
 
-import projectStore from '../stores/project';
-
-const project = projectStore();
-
 const newItemName = ref<string>('');
 const toRemove = ref<string>('');
 const details = ref<GameProject | null>(null);
 
 const toRemoveText = computed<string>(() => {
-    if (toRemove.value === '') {
+    const id = toRemove.value;
+
+    if (id === '') {
         return '';
     }
 
-    const id = toRemove.value;
     const gProject = projects.value.find((gameProject) => gameProject.id === id);
     const title = gProject.title ?? id;
 
@@ -149,6 +146,11 @@ function confirmRemove() {
 
 .active-row {
     box-shadow: inset 0 0 5px 0 var(--active-color);
+}
+
+.dialog {
+    max-height: 80vh;
+    overflow: auto;
 }
 
 </style>

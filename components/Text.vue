@@ -18,7 +18,6 @@ import MarkdownSup from 'markdown-it-sup';
 import MarkdownTasks from 'markdown-it-task-lists';
 import MarkdownFootnote from 'markdown-it-footnote';
 import { computed } from 'vue';
-import projectStore from '~/stores/project';
 
 type MarkdownIt = any;
 type MDContent = {
@@ -32,7 +31,6 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const project = projectStore();
 
 const componentKey = ref<string>(getUid('Text-'));
 const error = ref<string>('');
@@ -130,7 +128,7 @@ const enclosedChars = {
 };
 
 const aliases = computed(() => {
-    const aliasList = Object.values(project.alias.value);
+    const aliasList = Object.values(activeProject.value.alias);
 
     return aliasList.reduce((list, alias) => {
         let value: string;
@@ -244,7 +242,7 @@ function replaceEnum(str: string) {
     return str.replace(enumPattern, (_pattern, name, value) => {
         const enumName = replaceRef(name, true);
         const val = replaceRef(value, true);
-        const enumRef = getEnum(project.enumerations.value, enumName);
+        const enumRef = getEnum(activeProject.value.enumerations, enumName);
 
         return getEnumValue(enumRef, val);
     });

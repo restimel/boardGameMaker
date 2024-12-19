@@ -1,5 +1,3 @@
-import { states } from "~/stores/project";
-
 export const projects = ref<Projects>([]);
 
 watch(projects, () => {
@@ -34,16 +32,16 @@ They will be lost if you change to another project.
         currentProject.value = activeProject;
     }
 
-    const activeProject = currentProject.value;
-    const activeVersion = activeProject.versions[version];
+    const currentProjectValue = currentProject.value;
+    const currentVersion = currentProjectValue.versions[version];
 
     reset();
-    states.id.value = activeProject.id;
-    states.title.value = activeProject.title;
-    states.version.value = version;
+    activeProject.value.id = currentProjectValue.id;
+    activeProject.value.title = currentProjectValue.title;
+    activeProject.value.version = version;
 
-    if (activeVersion) {
-        loadProject(activeVersion);
+    if (currentVersion) {
+        loadProject(currentVersion);
     }
 
     return true;

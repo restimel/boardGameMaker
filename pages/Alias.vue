@@ -213,10 +213,6 @@
 </template>
 <script setup lang="ts">
 
-import projectStore from '~/stores/project';
-
-const project = projectStore();
-
 const attributeError = ref<string>('');
 const newAlias = ref<string>('');
 const newEnumeration = ref<string>('');
@@ -225,13 +221,13 @@ const isImage = ref<Set<string>>(new Set());
 const updateEnumId = ref<string>('');
 
 const aliasList = computed<Alias[]>(() => {
-    const keys = Object.values(project.alias.value);
+    const keys = Object.values(activeProject.value.alias);
 
     return keys;
 });
 
 const enumerationList = computed<Enumeration[]>(() => {
-    return project.enumerations.value;
+    return activeProject.value.enumerations;
 });
 
 const toRemoveType = computed<'alias' | 'enumeration' | ''>(() => {
@@ -252,9 +248,9 @@ const toRemoveName = computed<string>(() => {
 
     switch (toRemoveType.value) {
         case 'alias':
-            return project.alias.value[id]?.alias ?? '';
+            return activeProject.value.alias[id]?.alias ?? '';
         case 'enumeration':
-            return project.enumerations.value.find((enumeration) => enumeration.id === id)?.name ?? '';
+            return activeProject.value.enumerations.find((enumeration) => enumeration.id === id)?.name ?? '';
         case '':
             return '';
     }
@@ -297,7 +293,7 @@ function addAlias() {
         image: '',
     };
 
-    project.alias.value[id] = alias;
+    activeProject.value.alias[id] = alias;
 
     newAlias.value = '';
 }
@@ -310,13 +306,13 @@ function confirmRemove() {
     const id = toRemove.value;
 
     if (id.startsWith('alias-')) {
-        delete project.alias.value[id];
+        delete activeProject.value.alias[id];
     } else
     if (id.startsWith('enum-')) {
-        const index = project.enumerations.value.findIndex((enumeration) => enumeration.id === id);
+        const index = activeProject.value.enumerations.findIndex((enumeration) => enumeration.id === id);
 
         if (index > -1) {
-            project.enumerations.value.splice(index, 1);
+            activeProject.value.enumerations.splice(index, 1);
         }
     }
 
@@ -333,7 +329,7 @@ function addEnumeration() {
         defaultValue: '',
     };
 
-    project.enumerations.value.push(enumeration);
+    activeProject.value.enumerations.push(enumeration);
 
     newEnumeration.value = '';
 }

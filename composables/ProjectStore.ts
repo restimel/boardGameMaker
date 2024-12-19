@@ -1,7 +1,3 @@
-import {
-    states,
-} from '~/stores/project';
-
 /** Current project is the one we are reading
  * Changes are done in activeProject until we save modifications
  */
@@ -17,6 +13,9 @@ export const projectIsChanged = computed<boolean>(() => {
         return false;
     }
 
+    /* XXX: for reactivity */
+    activeProjectChanged.value;
+
     if (!projectVersion) {
         return true;
     }
@@ -31,6 +30,9 @@ export const projectIsChanged = computed<boolean>(() => {
             if (!objEqual(active[sKey], value)) {
                 return true;
             }
+        } else {
+            /* missing key */
+            return true;
         }
     }
 
@@ -38,11 +40,11 @@ export const projectIsChanged = computed<boolean>(() => {
 });
 
 export function loadProject(projectVersion: Project) {
+    const activeProjectValue = activeProject.value;
     for (const [key, value] of Object.entries(projectVersion)) {
-        /* TODO: update activeProject */
-        if (key in states) {
+        if (key in activeProjectValue) {
             const sKey = key as StatesKey;
-            states[sKey].value = value;
+            (activeProject.value as any)[sKey] = copyValue(value);
         }
     }
 }
@@ -83,14 +85,14 @@ export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', 
     }
 
     if (mode === 'new') {
-        const newProject = createProject(states.title.value);
+        const newProject = createProject(activeProject.value.title);
 
         currentProject.value = newProject;
         projects.value.push(newProject);
     }
 
     const gameProject = currentProject.value;
-    gameProject.title = states.title.value;
+    gameProject.title = activeProject.value.title;
 
     const gameProjectProperty = [
         'title',
@@ -98,9 +100,9 @@ export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', 
         'id',
     ];
 
-    const projectVersion: Project = Array.from(Object.entries(states)).reduce((jsStates, [key, value]) => {
+    const projectVersion: Project = Array.from(Object.entries(activeProject.value)).reduce((jsStates, [key, value]) => {
         if (!gameProjectProperty.includes(key)) {
-            (jsStates as any)[key] = value.value;
+            (jsStates as any)[key] = value;
         }
 
         return jsStates;
@@ -112,7 +114,7 @@ export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', 
     gameProject.versions[newVersion] = projectVersion;
 
     loadProject(projectVersion);
-    states.version.value = newVersion;
+    activeProject.value.version = newVersion;
 
     return gameProject;
 }

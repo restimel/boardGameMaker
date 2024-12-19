@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="material of project.materials.value"
+                <tr v-for="material of activeProject.materials"
                     :key="`material-${material.name}`"
                     @click="navigateTo(`material/${material.name}/contents`)"
                 >
@@ -42,7 +42,7 @@
                         </button>
                     </td>
                 </tr>
-                <tr v-if="project.materials.value.length === 0"
+                <tr v-if="activeProject.materials.length === 0"
 
                 >
                     <td
@@ -63,10 +63,6 @@
 </template>
 <script setup lang="ts">
 
-import projectStore from '~/stores/project';
-
-const project = projectStore();
-
 function addItem() {
     navigateTo('/material/configuration');
 }
@@ -80,11 +76,11 @@ async function removeItem(name: string) {
 }
 
 function confirmRemove(value: string) {
-    const materials = project.materials.value;
+    const materials = activeProject.value.materials;
     const index = materials.findIndex((item) => item.name === value);
     materials.splice(index, 1);
 
-    project.materials.value = materials;
+    activeProject.value.materials = materials;
 }
 
 </script>

@@ -144,7 +144,7 @@ type Project = {
 
 type StateExtended = {
     title: string;
-    /** Gameproject id */
+    /** GameProject id */
     id: string;
     version: string;
 };

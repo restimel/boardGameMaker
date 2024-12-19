@@ -1,7 +1,3 @@
-import {
-    states,
-} from '~/stores/project';
-
 export const ready = ref<boolean>(false);
 
 function loadProjects(projectList: Projects) {
@@ -9,14 +5,13 @@ function loadProjects(projectList: Projects) {
         projects.value = projectList;
     }
 
-    /* TODO: use activeProject */
-    const id = states.id.value;
-    const activeProject = projectList.find((pjt) => {
+    const id = activeProject.value.id;
+    const currentGameProject = projectList.find((pjt) => {
         return pjt.id === id;
     });
 
-    if (activeProject) {
-        currentProject.value = activeProject;
+    if (currentGameProject) {
+        currentProject.value = currentGameProject;
     }
 
     if (!id) {

@@ -74,6 +74,7 @@
 
     button {
         cursor: pointer;
+        user-select: none;
     }
 
     /* }}} */

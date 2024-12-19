@@ -1,7 +1,3 @@
-import {
-    getCurrentProject,
-    states,
-} from '~/stores/project';
 
 export const activeProject = ref<StateProject>({
     title: 'The project',
@@ -29,8 +25,37 @@ export const activeProject = ref<StateProject>({
     enumerations: [],
 });
 
-export async function importProject(data: StateProject): Promise<boolean> {
-    if (projectIsChanged.value) {
+/** This value is incremented when activeProject is changed */
+export const activeProjectChanged = ref(0n);
+
+watch(activeProject, () => {
+    activeProjectChanged.value++;
+    saveStorage('project', activeProject.value);
+}, { deep: true });
+
+export const playersInfo = computed(() => {
+    let text = '';
+    const activeProjectValue = activeProject.value;
+
+    if (activeProjectValue.playerMin === activeProjectValue.playerMax) {
+        text = activeProjectValue.playerMin.toString(10);
+    } else {
+        text = `${activeProjectValue.playerMin} - ${activeProjectValue.playerMax}`;
+    }
+
+    if (activeProjectValue.playerBest) {
+        text += ` (best: ${activeProjectValue.playerBest})`;
+    }
+
+    if (activeProjectValue.playerOptions) {
+        text += ` ${activeProjectValue.playerOptions}`;
+    }
+
+    return text;
+});
+
+export async function importProject(data: StateProject, doNotCheck = false): Promise<boolean> {
+    if (!doNotCheck && projectIsChanged.value) {
         const result = await confirmDialog(`There are some changes that are not saved.
 They will be lost if you import another project.
 
@@ -72,52 +97,3 @@ Do you want to **override** it or to create a new minor version (_cancel_)?
 
     return true;
 }
-
-/* Transition code until stores/project.ts will be entirely rewritten */
-watch(activeProject, () => {
-    /* check diff (to avoid cyclic) */
-    const stateJson = getCurrentProject();
-    const activeProjectValue = activeProject.value;
-
-    if (objEqual(stateJson, activeProjectValue)) {
-        return;
-    }
-    console.log('update states')
-
-    /* copy activeProject to states */
-    importProject(activeProjectValue);
-}, { deep: true });
-
-watch([
-    states.title,
-    states.id,
-    states.version,
-    states.author,
-    states.buildVersion,
-    states.concept,
-    states.setup,
-    states.rules,
-    states.endOfGame,
-    states.score,
-    states.playerMin,
-    states.playerMax,
-    states.playerBest,
-    states.playerOptions,
-    states.duration,
-    states.materials,
-    states.alias,
-    states.enumerations,
-], () => {
-    /* check diff (to avoid cyclic) */
-    const stateJson = getCurrentProject();
-    const activeProjectValue = activeProject.value;
-
-    if (objEqual(stateJson, activeProjectValue)) {
-        return;
-    }
-
-    console.log('update activeProject')
-
-    /* copy states to activeProject */
-    activeProject.value = stateJson;
-}, {deep: true});

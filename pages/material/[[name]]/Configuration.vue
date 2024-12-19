@@ -162,11 +162,9 @@
 import { computed, ref, watch } from 'vue';
 import CardSettings from '~/components/CardSettings.vue';
 import DiceSettings from '~/components/DiceSettings.vue';
-import projectStore from '~/stores/project';
 
 const DEBOUNCE_ATTRIBUTE = 1000;
 
-const project = projectStore();
 const route = useRoute();
 const name: string = route.params.name as unknown as string;
 
@@ -219,7 +217,7 @@ watch(material, () => {
 
     const idx = materialIdx.value;
 
-    project.materials.value[idx] = material.value;
+    activeProject.value.materials[idx] = material.value;
 }, { deep: true });
 
 watch(attributeList, () => {
@@ -281,7 +279,7 @@ function updateAttributes() {
 }
 
 function save() {
-    project.materials.value.push(material.value);
+    activeProject.value.materials.push(material.value);
 
     navigateTo(`/materials`);
 }
@@ -291,11 +289,11 @@ onMounted(() => {
         return;
     }
 
-    materialIdx.value = project.materials.value.findIndex((item) => item.name === name);
+    materialIdx.value = activeProject.value.materials.findIndex((item) => item.name === name);
 
     if (!willCreate.value) {
         const idx = materialIdx.value;
-        const materialItem = project.materials.value[idx];
+        const materialItem = activeProject.value.materials[idx];
 
         material.value = {
             ...materialItem,

@@ -20,19 +20,17 @@
 
 import { computed } from 'vue';
 import Preview from '~/components/Preview.vue';
-import projectStore from '~/stores/project';
 
 type Content = {
     content: MaterialContent;
     context: MaterialContext;
 };
 
-const project = projectStore();
 const route = useRoute();
 const name: string = route.params.name as unknown as string;
 
 const material = computed<Material>(() => {
-    const projectMaterial = project.materials.value.find((item) => item.name === name) as Material;
+    const projectMaterial = activeProject.value.materials.find((item) => item.name === name) as Material;
 
     return projectMaterial;
 });

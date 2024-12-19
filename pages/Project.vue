@@ -3,7 +3,7 @@
         <h1>
             Project
             <br>
-            <sub>{{ project.version }}.{{ project.buildVersion }}</sub>
+            <sub>{{ activeProject.version }}.{{ activeProject.buildVersion }}</sub>
         </h1>
 
         <p>
@@ -13,33 +13,33 @@
         <section class="form">
             <label>
                 Title:
-                <input v-model="project.title.value" >
+                <input v-model="activeProject.title" >
             </label>
             <label>
                 Author:
-                <input v-model="project.author.value" >
+                <input v-model="activeProject.author" >
             </label>
         </section>
 
         <h2>Players</h2>
         <label>
             min:
-            <input v-model="project.playerMin.value" type="number" min="0">
+            <input v-model="activeProject.playerMin" type="number" min="0">
         </label>
         <label>
             max:
-            <input v-model="project.playerMax.value" type="number" min="0">
+            <input v-model="activeProject.playerMax" type="number" min="0">
         </label>
         <label>
             Best:
-            <input v-model="project.playerBest.value" type="number" min="0">
+            <input v-model="activeProject.playerBest" type="number" min="0">
         </label>
         <label>
             Others:
-            <input v-model="project.playerOptions.value" type="text">
+            <input v-model="activeProject.playerOptions" type="text">
         </label>
         <p>
-            Nb of players: <Text class="inline-text" :value="project.players.value" />
+            Nb of players: <Text class="inline-text" :value="playersInfo" />
         </p>
 
         <hr>
@@ -48,7 +48,7 @@
         <ImportFile
             file-type="JSON"
             :export-options="{
-                name: project.title.value,
+                name: activeProject.title,
                 content: jsonProject,
             }"
             @import="importFile"
@@ -57,13 +57,9 @@
 </template>
 <script setup lang="ts">
 
-import projectStore from '~/stores/project';
-
-const project = projectStore();
-
 const jsonProject = computed<StateExtended>(() => {
-    const states: StateExtended = Object.entries(project).reduce((states, [key, value]) => {
-        (states as any)[key] = value.value;
+    const states: StateExtended = Object.entries(activeProject.value).reduce((states, [key, value]) => {
+        (states as any)[key] = value;
 
         return states;
     }, {} as StateExtended);
@@ -75,7 +71,7 @@ async function importFile(data: StateProject) {
     const result = await importProject(data);
 
     if (result) {
-        console.log('imported', project.version.value, project.buildVersion.value);
+        console.info('imported', activeProject.value.version, activeProject.value.buildVersion);
     }
 }
 

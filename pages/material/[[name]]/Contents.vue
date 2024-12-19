@@ -24,14 +24,12 @@
 <script setup lang="ts">
 
 import { computed } from 'vue';
-import projectStore from '~/stores/project';
 
-const project = projectStore();
 const route = useRoute();
 const name: string = route.params.name as unknown as string;
 
 const material = computed<Material>(() => {
-    const projectMaterial = project.materials.value.find((item) => item.name === name) as Material;
+    const projectMaterial = activeProject.value.materials.find((item) => item.name === name) as Material;
 
     return projectMaterial;
 });

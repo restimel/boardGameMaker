@@ -26,7 +26,7 @@
         v-model="value"
         @change="change"
     >
-        <option v-for="enumeration of (getEnum(project.enumerations.value, enumId, 'id')?.values ?? [])"
+        <option v-for="enumeration of (getEnum(activeProject.enumerations, enumId, 'id')?.values ?? [])"
             :key="`inputContent-${enumeration.id}`"
             :value="enumeration.value"
         >
@@ -35,7 +35,7 @@
     </select>
     <span v-else-if="type.startsWith('enumeration-loop:')"
     >
-        Loop on the {{ getEnum(project.enumerations.value, enumId, 'id')?.values.length ?? 0 }} enumeration of {{ getEnum(project.enumerations.value, enumId, 'id')?.name }}
+        Loop on the {{ getEnum(activeProject.enumerations, enumId, 'id')?.values.length ?? 0 }} enumeration of {{ getEnum(activeProject.enumerations, enumId, 'id')?.name }}
     </span>
     <input v-else
         type="text"
@@ -44,9 +44,6 @@
     />
 </template>
 <script setup lang="ts">
-import projectStore from '~/stores/project';
-
-const project = projectStore();
 
 type Props = {
     description: MaterialDescription;

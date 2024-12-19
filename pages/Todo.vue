@@ -12,9 +12,9 @@ const value = `
 
 ### Project
 
-* [ ] store architecture
+* [x] store architecture
     * [x] split in smaller files
-    * [ ] remove project.ts
+    * [x] remove project.ts
 * [x] project version
 * [x] can select between different project
     * [ ] What happen when save minor/major/build when not on last?

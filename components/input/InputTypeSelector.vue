@@ -23,9 +23,6 @@
     </select>
 </template>
 <script setup lang="ts">
-import projectStore from '~/stores/project';
-
-const project = projectStore();
 
 type Props = {
     disabled?: boolean;
@@ -43,7 +40,7 @@ const enumerationList = computed<[string, string][]>(() => {
         return [];
     }
 
-    const enums = project.enumerations.value;
+    const enums = activeProject.value.enumerations;
 
     return enums.map((enumeration) => {
         return [
@@ -58,7 +55,7 @@ const enumerationLoopList = computed<[string, string][]>(() => {
         return [];
     }
 
-    const enums = project.enumerations.value;
+    const enums = activeProject.value.enumerations;
 
     return enums.map((enumeration) => {
         return [
