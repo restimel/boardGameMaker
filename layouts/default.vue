@@ -13,27 +13,29 @@
                 </NuxtLink>
             </nav>
             <menu>
-                <button
-                    class="default-button"
-                    :disabled="!projectIsChanged"
-                    @click="saveProject('major')"
-                >
-                    Save major
-                </button>
-                <button
-                    class="default-button"
-                    :disabled="!projectIsChanged"
-                    @click="saveProject('minor')"
-                >
-                    Save minor
-                </button>
-                <button
-                    class="main-button"
-                    :disabled="!projectIsChanged"
-                    @click="saveProject('build')"
-                >
-                    Save
-                </button>
+                <ClientOnly>
+                    <button
+                        class="default-button"
+                        :disabled="disabledButton"
+                        @click="save('major')"
+                    >
+                        Save major
+                    </button>
+                    <button
+                        class="default-button"
+                        :disabled="disabledButton"
+                        @click="save('minor')"
+                    >
+                        Save minor
+                    </button>
+                    <button
+                        class="main-button"
+                        :disabled="disabledButton"
+                        @click="save('build')"
+                    >
+                        Save
+                    </button>
+                </ClientOnly>
             </menu>
         </header>
         <main class="page">
@@ -55,6 +57,10 @@
 <script setup lang="ts">
 
 const route = useRoute();
+
+const disabledButton = computed(() => {
+    return !projectIsChanged.value;
+});
 
 const menuList = computed(() => {
     return [{
@@ -96,6 +102,14 @@ const menuList = computed(() => {
         },
     }];
 });
+
+function save(mode: BuildMode) {
+    if (disabledButton.value) {
+        return;
+    }
+
+    saveProject(mode);
+}
 
 </script>
 <style scoped>

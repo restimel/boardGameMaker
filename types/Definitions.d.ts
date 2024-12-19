@@ -19,3 +19,5 @@ type Rectangle = [number, number, number, number];
 
 /** [x, y, width, height, rotation] */
 type RotationRectangle = [number, number, number, number, number];
+
+type BuildMode = 'new' | 'same' | 'major' | 'minor' | 'build';

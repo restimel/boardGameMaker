@@ -4,7 +4,7 @@ export async function loadStorage(name: string, wait = 0): Promise<object | null
     if (!import.meta.client) {
         if (wait) {
             await new Promise((resolve) => {
-                setTimeout(resolve, 100);
+                setTimeout(resolve, 20);
             });
 
             return loadStorage(name, wait - 1);

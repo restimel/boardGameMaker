@@ -10,6 +10,7 @@ export const projectIsChanged = computed<boolean>(() => {
     const projectVersion = current.versions[version];
 
     if (import.meta.server) {
+        /* no need to check right now */
         return false;
     }
 
@@ -49,7 +50,7 @@ export function loadProject(projectVersion: Project) {
     }
 }
 
-export function saveProject(mode: 'new' | 'same' | 'major' | 'minor' | 'build', version = ''): GameProject {
+export function saveProject(mode: BuildMode, version = ''): GameProject {
     let [major, minor, build] = getLastVersion(currentProject.value);
 
     if (version) {
