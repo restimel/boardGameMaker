@@ -138,7 +138,7 @@ Some common smileys are automatically converted, such as \`:)\` or \`;)\` (:), ;
 
 If you want to keep the original characters, you can always escape one of them with \`\\\`.
 
-\`\\\\:)\` → \\:)
+\`\\:)\` → \\:)
 
 ### Emoji and Aliases
 
@@ -164,7 +164,9 @@ To access one of the value, use \`:enum<enumName, enumKey>:\`.
 * \`enumKey\` is to reference the value inside the enumeration.
 
 Both \`enumName\` and \`enumKey\` can be set with references.
-
+\`\`\`
+:enum<ref<key>, ref<value>>:
+\`\`\`
 `;
 
 
