@@ -36,14 +36,18 @@ const material = computed<Material>(() => {
 });
 
 const contents = computed<Content[]>(() => {
-    const contents = material.value.contents;
-    const contexts = createAllContext(activeProject.value, material.value.description);
+    const materialValue = material.value;
+    const contents = materialValue.contents;
+    const contexts = createAllContext(activeProject.value, materialValue);
 
     return contexts.flatMap((context) => {
         return contents.map((content) => {
             return {
                 content: content,
-                context: context,
+                context: {
+                    ...context,
+                    content,
+                },
             };
         });
     });

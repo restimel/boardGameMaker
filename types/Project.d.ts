@@ -6,7 +6,13 @@ type MaterialPart = 'Box' | 'Image';
 type DescriptionType = 'text' | 'number' | 'image' | 'color'
     | EnumerationType | EnumerationLoopType;
 
-type MaterialContext = {
+type RefOptions = {
+    material?: Material;
+    content?: MaterialContent | null;
+    list?: Set<string>;
+};
+
+type MaterialContext = RefOptions & {
     /** The current loop context.
      *
      * { enumId: keyId }
@@ -24,7 +30,7 @@ type CardFormat = {
 
 type MetaTextOptions = {
     size: number;
-    color: string;
+    color: Color;
     alignment: 'center' | 'start' | 'end';
 }
 
@@ -45,7 +51,7 @@ type MetaReference = MetaTextOptions & {
 };
 
 type MetaContent = MetaReference | MetaStaticText | MetaStaticImage;
-type ContentValue = string | number | undefined;
+type ContentValue = string | number | Color | undefined;
 
 type MaterialContent = Record<string, ContentValue>;
 
@@ -58,8 +64,8 @@ type MetaMaterial = {
     rotation: Angle;
     content: MetaContent;
 
-    color: string; /* TODO: To remove (replace by content.color) */
-    bgColor: string;
+    color: Color; /* TODO: To remove (replace by content.color) */
+    bgColor: Color;
 };
 
 type MaterialDescription = {
@@ -82,7 +88,7 @@ type MaterialCard = MaterialBase & {
     type: 'Cards';
 
     dimension: Dimension;
-    backgroundColor: string;
+    backgroundColor: Color;
     front: MetaMaterial[];
     back: MetaMaterial[];
 };
@@ -91,7 +97,7 @@ type MaterialDice = MaterialBase & {
     type: 'Dice';
 
     faces: number;
-    diceColor: string;
+    diceColor: Color;
 };
 
 type Material = MaterialCard | MaterialDice;

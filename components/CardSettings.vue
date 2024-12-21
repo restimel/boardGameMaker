@@ -27,12 +27,24 @@
                 </span>
             </label>
         </label>
-        <InputColor label="Color" v-model="material.backgroundColor" />
+        <InputColor
+            label="Color"
+            :context="context"
+            v-model="material.backgroundColor"
+        />
     </div>
 </template>
 <script setup lang="ts">
 
 const material: Ref<MaterialCard> = defineModel<MaterialCard>() as any;
+
+const context = computed<MaterialContext>(() => {
+    const project = activeProject.value;
+    const materialValue = material.value;
+    const descriptions = materialValue.description;
+
+    return createContext(project, descriptions, materialValue, undefined);
+});
 
 function initialization() {
     const item = material.value;

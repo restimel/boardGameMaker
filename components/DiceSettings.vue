@@ -4,16 +4,24 @@
             Number of faces:
             <input type="number" v-model="material.faces" min="2" >
         </label>
-        <label>
-            Dice color:
-            <input type="color" v-model="material.diceColor" >
-        </label>
+        <InputColor
+            label="Dice color"
+            :context="context"
+            v-model="material.diceColor"
+        />
     </div>
 </template>
 <script setup lang="ts">
 
 const material: Ref<MaterialDice> = defineModel<MaterialDice>() as any;
 
+const context = computed<MaterialContext>(() => {
+    const project = activeProject.value;
+    const materialValue = material.value;
+    const descriptions = materialValue.description;
+
+    return createContext(project, descriptions, materialValue, undefined);
+});
 
 function initialization() {
     const item = material.value;
@@ -21,6 +29,7 @@ function initialization() {
     if (!item.faces) {
         material.value.faces = getDefaultDiceFaces();
     }
+
     if (!item.diceColor) {
         material.value.diceColor = getDefaultMaterialColor();
     }

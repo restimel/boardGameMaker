@@ -8,7 +8,7 @@
             :y="detail.position[1] * px"
             :width="detail.dimension[0] * px"
             :height="detail.dimension[1] * px"
-            :fill="detail.bgColor"
+            :fill="getColor(detail.bgColor, refOptions)"
         />
 
         <foreignObject v-if="type === 'Text'"
@@ -21,7 +21,7 @@
                 class="text-svg"
                 :style="`
                     --text-size: ${detail.content.size * px}px;
-                    --text-color: ${detail.content.color};
+                    --text-color: ${getColor(detail.content.color, refOptions)};
                     --text-alignment: ${detail.content.alignment}
                 `"
             >
@@ -38,7 +38,7 @@
             :y="detail.position[1] * px"
             :width="detail.dimension[0] * px"
             :height="detail.dimension[1] * px"
-            :fill="detail.bgColor"
+            :fill="getColor(detail.bgColor, refOptions)"
         />
         <image
             :x="detail.position[0] * px"
@@ -51,8 +51,6 @@
     </g>
 </template>
 <script setup lang="ts">
-import { getRefValue } from '~/utils/Formats';
-
 
 type Props = {
     value: MetaMaterial;
@@ -66,6 +64,13 @@ const props = defineProps<Props>();
 
 const detail = computed(() => {
     return props.value;
+});
+
+const refOptions = computed<RefOptions>(() => {
+    return {
+        material: props.material,
+        content: props.content,
+    };
 });
 
 const imageAlign = computed(() => {
@@ -123,11 +128,19 @@ const extendedContent = computed< MaterialContent | null | undefined>(() => {
 const value = computed<string>(() => {
     const contentType = detail.value.content.type;
     const contentValue = detail.value.content.value;
+    const context = props.context ?? {
+        loop: {},
+        project: activeProject.value,
+        material: props.material,
+    };
 
     switch (contentType) {
         case 'StaticText': return contentValue;
         case 'StaticImage': return contentValue;
-        case 'Reference': return getRefValue(descRef.value, extendedContent.value, props.context);
+        case 'Reference': return getRefValue(descRef.value, {
+            ...context,
+            content: extendedContent.value,
+        });
     }
 
     console.warn('type not managed yet :(', contentType);

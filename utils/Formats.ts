@@ -1,9 +1,9 @@
 
-export function getDefaultMaterialColor(): string {
+export function getDefaultMaterialColor(): Color {
     return '#FFFFFF';
 }
 
-export function getDefaultMaterialTextColor(): string {
+export function getDefaultMaterialTextColor(): Color {
     return '#000000';
 }
 
@@ -86,7 +86,20 @@ export function getDefaultTextSize(rect?: Rectangle): number {
     return 4;
 }
 
-export function formatValue(value: ContentValue, type: DescriptionType): string {
+export function getColor(color: Color, options: RefOptions): string {
+    let refColor = color.trim();
+
+    if (!refColor.startsWith(':')) {
+        return refColor;
+    }
+
+    refColor = replaceRef(refColor, options, false);
+    refColor = replaceEnum(refColor, options);
+
+    return refColor;
+}
+
+export function formatValue(value: ContentValue, type: DescriptionType, refOptions: RefOptions = {}): string {
     switch (type) {
         case 'image': {
             if (typeof value === 'string') {
@@ -124,7 +137,7 @@ export function formatValue(value: ContentValue, type: DescriptionType): string 
 
         case 'color': {
             if (typeof value === 'string') {
-                return value;
+                return getColor(value, refOptions);
             }
 
             return '';
@@ -148,7 +161,7 @@ export function getDefaultValue(type: DescriptionType, defaultTextValue = '⚠�
     }
 }
 
-export function getRefValue(ref?: MaterialDescription | null, content?: MaterialContent | null, ctx?: MaterialContext): string {
+export function getRefValue(ref?: MaterialDescription | null, ctx?: MaterialContext): string {
     const type = ref?.type;
     const property = ref?.name ?? '';
 
@@ -156,11 +169,19 @@ export function getRefValue(ref?: MaterialDescription | null, content?: Material
         return `⚠️<${property || 'no ref'}>`;
     }
 
+    const content = ctx?.content;
+
+    const options: RefOptions = {
+        material: ctx?.material,
+        content: content,
+        list: ctx?.list,
+    };
+
     if (isEnumLoop(type)) {
         const enumId = extractEnumLoopId(type);
 
         if (!ctx) {
-            return formatValue(ref?.defaultValue || `<loop on ${enumId}>`, 'text')
+            return formatValue(ref?.defaultValue || `<loop on ${enumId}>`, 'text', options);
         }
 
         const enumerations = ctx.project.enumerations;
@@ -173,21 +194,21 @@ export function getRefValue(ref?: MaterialDescription | null, content?: Material
         }
 
         const value = getEnumValue(enumeration, enumKey);
-        return formatValue(value, enumType ?? type);
+        return formatValue(value, enumType ?? type, options);
     }
 
     const propValue = content?.[property];
 
     /* When ref has a value */
     if (typeof propValue !== 'undefined') {
-        return formatValue(propValue, type);
+        return formatValue(propValue, type, options);
     }
 
     const defaultValue = ref?.defaultValue;
 
     /* When description has a default value */
     if (typeof defaultValue !== 'undefined' && defaultValue !== '') {
-        return formatValue(defaultValue, type);
+        return formatValue(defaultValue, type, options);
     }
 
     /* when no default are set */
@@ -202,7 +223,7 @@ export function getLoopAttributes(descriptions: MaterialDescriptions): MaterialD
     return attributes;
 }
 
-export function createContext(project: Project, descriptions: MaterialDescriptions): MaterialContext {
+export function createContext(project: Project, descriptions: MaterialDescriptions, material?: Material, content?: MaterialContent | null): MaterialContext {
     const loop: Record<string, string> = {};
     const enumerations = project.enumerations;
 
@@ -218,6 +239,8 @@ export function createContext(project: Project, descriptions: MaterialDescriptio
     return {
         loop: loop,
         project: project,
+        material: material,
+        content: content ?? material?.contents[0],
     };
 }
 
@@ -262,7 +285,8 @@ function contextCombination(loops: Map<string, string[]>) {
     return list;
 }
 
-export function createAllContext(project: Project, descriptions: MaterialDescriptions): MaterialContext[] {
+export function createAllContext(project: Project, material: Material): MaterialContext[] {
+    const descriptions = material.description;
     const loops: Map<string, string[]> = new Map();
     const enumerations = project.enumerations;
 
@@ -279,6 +303,7 @@ export function createAllContext(project: Project, descriptions: MaterialDescrip
         return {
             loop: loop,
             project: project,
+            material: material,
         };
     });
 

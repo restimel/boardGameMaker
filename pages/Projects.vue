@@ -93,6 +93,9 @@
 </template>
 <script setup lang="ts">
 
+import '../.nuxt/nuxt';
+import '../types/Project.d';
+
 const newItemName = ref<string>('');
 const toRemove = ref<string>('');
 const details = ref<GameProject | null>(null);

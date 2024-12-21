@@ -217,7 +217,7 @@ function getXY(event: MouseEvent): [number, number] {
     return [x * ratioX.value, y * ratioY.value];
 }
 
-function isInRectangle(x: number, y: number) {
+function isInRectangle(x: number, y: number): boolean {
     const rect = innerRectangle.value;
 
     if (!rect) {

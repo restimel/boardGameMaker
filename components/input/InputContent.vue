@@ -1,7 +1,7 @@
 <template>
     <TextEditor v-if="type === 'text'"
         v-model="value"
-        :placeholder="getRefValue(props.description, {})"
+        :placeholder="getRefValue(props.description, ctx)"
         :material="material"
         :content="content"
         noPreview
@@ -10,7 +10,7 @@
     <input v-else-if="type === 'number'"
         type="number"
         v-model="value"
-        :placeholder="getRefValue(props.description, {})"
+        :placeholder="getRefValue(props.description, ctx)"
         @change="change"
     />
     <InputImage v-else-if="type === 'image'"
@@ -20,6 +20,7 @@
     />
     <InputColor v-else-if="type === 'color'"
         v-model="value"
+        :context="context"
         @change="change"
     />
     <select v-else-if="type.startsWith('enumeration:')"
@@ -40,7 +41,7 @@
     <input v-else
         type="text"
         v-model="value"
-        :placeholder="getRefValue(props.description, {})"
+        :placeholder="getRefValue(props.description, ctx)"
     />
 </template>
 <script setup lang="ts">
@@ -59,8 +60,26 @@ const emit = defineEmits<{
 
 const value = ref<ContentValue>(undefined);
 
+const context = computed<MaterialContext>(() => {
+    const project = activeProject.value;
+    const materialValue = props.material;
+    const descriptions: MaterialDescriptions = materialValue?.description ?? {};
+    const content = props.content;
+
+    return createContext(project, descriptions, materialValue, content);
+});
+
 const type = computed<DescriptionType>(() => {
     return props.description.type;
+});
+
+const ctx = computed<MaterialContext>(() => {
+    return {
+        loop: {},
+        project: activeProject.value,
+        material: props.material,
+        content: props.content,
+    };
 });
 
 const enumId = computed<string>(() => {

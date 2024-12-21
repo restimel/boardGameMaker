@@ -21,3 +21,5 @@ type Rectangle = [number, number, number, number];
 type RotationRectangle = [number, number, number, number, number];
 
 type BuildMode = 'new' | 'same' | 'major' | 'minor' | 'build';
+
+type Color = string;

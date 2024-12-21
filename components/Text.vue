@@ -33,13 +33,6 @@ type Props = {
 const props = defineProps<Props>();
 
 const componentKey = ref<string>(getUid('Text-'));
-const error = ref<string>('');
-
-const text = computed(() => {
-    const value = props.value;
-
-    return value ?? '';
-});
 
 /* https://github.com/markdown-it/markdown-it?tab=readme-ov-file#init-with-presets-and-options */
 const options = {
@@ -127,6 +120,19 @@ const enclosedChars = {
   '(z)': 'ⓩ'
 };
 
+const text = computed(() => {
+    const value = props.value;
+
+    return value ?? '';
+});
+
+const refOptions = computed<RefOptions>(() => {
+    return {
+        material: props.material,
+        content: props.content,
+    };
+});
+
 const aliases = computed(() => {
     const aliasList = Object.values(activeProject.value.alias);
 
@@ -170,62 +176,6 @@ watch(aliases, () => {
     restartMarkdown();
 });
 
-function buildRefContent(value: string): [MaterialDescription | undefined, MaterialContent | null | undefined] {
-    const ref = props.material?.description[value];
-
-    if (!ref) {
-        if (value === 'index') {
-            const ref: MaterialDescription = {
-                name: 'index',
-                type: 'number',
-                defaultValue: '0',
-            };
-            const targetContent = props.content;
-            const content = {
-                index: (props.material?.contents.indexOf(targetContent!) ?? -1) + 1,
-            };
-
-            return [ref, content];
-        }
-
-        if (value === 'total') {
-            const ref: MaterialDescription = {
-                name: 'total',
-                type: 'number',
-                defaultValue: '0',
-            };
-            const content = {
-                total: props.material?.contents.length,
-            };
-
-            return [ref, content];
-        }
-    }
-
-    return [ref, props.content];
-}
-
-/* Regular expression to match `:ref<value>:` */
-const refPattern = /:ref<\s*([^:]+)\s*>:/gi;
-function replaceRef(value: string, insideToken = false) {
-    const str = insideToken ? `:${value}:` : value;
-    const result = str.replace(refPattern, (_pattern, value) => {
-        const [ref, content] = buildRefContent(value);
-
-        return getRefValue(ref, content);
-    });
-
-    if (!insideToken) {
-        return result;
-    }
-
-    if (result === `:${value}:`) {
-        return value;
-    }
-
-    return result;
-}
-
 // function refValuePlugin(md: MarkdownIt) {
 //     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
 //         let patternContent = tokens[idx].content;
@@ -236,25 +186,14 @@ function replaceRef(value: string, insideToken = false) {
 //     };
 // }
 
-/* Regular expression to match `:enum<name, key>:` */
-const enumPattern = /:enum<\s*([^:,]+)\s*,\s*([^:]+)\s*>:/gi;
-function replaceEnum(str: string) {
-    return str.replace(enumPattern, (_pattern, name, value) => {
-        const enumName = replaceRef(name, true);
-        const val = replaceRef(value, true);
-        const enumRef = getEnum(activeProject.value.enumerations, enumName);
-
-        return getEnumValue(enumRef, val);
-    });
-}
-
-
 function enumValuePlugin(md: MarkdownIt) {
     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
+        /* XXX: option should be read inside the function otherwise it is not reactive */
+        const option = refOptions.value;
         let patternContent = tokens[idx].content;
 
-        patternContent = replaceRef(patternContent);
-        patternContent = replaceEnum(patternContent);
+        patternContent = replaceRef(patternContent, option);
+        patternContent = replaceEnum(patternContent, option);
 
         return md.utils.escapeHtml(patternContent);
     };
@@ -268,6 +207,7 @@ function restartMarkdown() {
         componentKey.value = getUid('Text-');
     }, 250);
 }
+
 </script>
 <style>
 .alias-icon {

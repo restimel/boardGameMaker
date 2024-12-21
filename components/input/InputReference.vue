@@ -40,7 +40,11 @@
             </option>
         </select>
         <InputRange :min="0" :max="50" v-model="content.size" />
-        <InputColor label="Text color" v-model="content.color" />
+        <InputColor
+            label="Text color"
+            :context="context"
+            v-model="content.color"
+        />
         <label class="text-alignment">
             <button
                 :class="{
@@ -70,6 +74,7 @@
     </label>
 </template>
 <script setup lang="ts">
+
 type Props = {
     label: string;
     materials: Material;
@@ -81,6 +86,14 @@ const valueType = ref<'StaticText' | 'StaticImage' | 'Reference'>('StaticText');
 const valueContent = ref<string>('');
 
 const uid = Math.random();
+
+const context = computed<MaterialContext>(() => {
+    const project = activeProject.value;
+    const materialValue = props.materials;
+    const descriptions = materialValue.description;
+
+    return createContext(project, descriptions, materialValue, undefined);
+});
 
 const referenceList = computed<MaterialDescription[]>(() => {
     const list = Object.values(props.materials.description);
@@ -115,7 +128,7 @@ function onInputType() {
     }
 
     const size = content.value.size || getDefaultTextSize();
-    const color = content.value.color || getDefaultMaterialTextColor();
+    const color: Color = content.value.color || getDefaultMaterialTextColor();
 
     const ref: MetaContent = {
         type,

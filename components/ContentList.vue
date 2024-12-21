@@ -19,9 +19,9 @@
                     <tr v-for="(content, index) in contents"
                         :key="`content-list-row-${index}`"
                         :class="{
-                            'active-row': content === activeContent,
+                            'active-row': content === selectedContent,
                         }"
-                        @click="activeContent = content"
+                        @click="selectedContent = content"
                     >
                         <td class="index">
                             {{ +index + 1 }}
@@ -75,7 +75,7 @@
         <div class="preview">
             <Preview
                 :material="material"
-                :content="activeContent"
+                :content="selectedContent"
                 :context="context"
             />
         </div>
@@ -99,7 +99,7 @@ const props = defineProps<Props>();
 const contentsModel = defineModel<MaterialContent[]>();
 
 const attributeError = ref<string>('');
-const activeContent = ref<MaterialContent | null>(null);
+const selectedContent = ref<MaterialContent | null>(null);
 
 const contents = computed<MaterialContent[]>(() => {
     const list = contentsModel.value;
@@ -129,9 +129,11 @@ const exportOptions = computed(() => {
 
 const context = computed<MaterialContext>(() => {
     const project = props.project;
-    const descriptions = props.material.description;
+    const material = props.material;
+    const descriptions = material.description;
+    const content = selectedContent.value;
 
-    return createContext(project, descriptions);
+    return createContext(project, descriptions, material, content);
 });
 
 function addContent(propertyName: string, value: ContentValue) {
@@ -144,7 +146,7 @@ function addContent(propertyName: string, value: ContentValue) {
     };
 
     contentsModel.value?.push(content);
-    activeContent.value = content;
+    selectedContent.value = content;
 }
 
 function removeContent(key: number | string) {

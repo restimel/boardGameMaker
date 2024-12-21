@@ -32,7 +32,7 @@ const value = `
 
 ### Material
 
-* [ ] allow to use reference in color
+* [x] allow to use reference in color
 * [x] allow to repeat materials contents looping on enum
 * [x] import/export csv
 
@@ -49,6 +49,7 @@ const value = `
 * [ ] material: board
 * [ ] check when removing an item it is not used (for example attributes used in description)
 * [ ] remove existing layer
+* [ ] multi-language
 
 ## :bug: Bugs
 

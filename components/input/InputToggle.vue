@@ -4,7 +4,7 @@
             'toggle-container': true,
             disabled: !!props.disabled,
         }"
-        @click="toggle"
+        @click.stop.prevent="toggle"
     >
         <div class="toggle-switch" :class="{ 'active': value }">
             <span class="label left" :class="{ 'active': !value }">
@@ -59,8 +59,8 @@ const toggle = () => {
 
 .slider {
     position: relative;
-    width: 50px;
-    height: 26px;
+    width: 41px;
+    height: 18px;
     background-color: #e0e0e0;
     border-radius: 13px;
     transition: background-color 0.3s;
@@ -68,10 +68,10 @@ const toggle = () => {
 
 .thumb {
     position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 20px;
-    height: 20px;
+    left: 0px;
+    top: 0px;
+    width: 17px;
+    height: 17px;
     background-color: var(--bg-color);
     border-radius: 50%;
     transition: transform 0.3s;

@@ -60,7 +60,11 @@
                             </button>
                         </span>
                     </div>
-                    <InputColor label="Background color" v-model="layer.bgColor" />
+                    <InputColor
+                        label="Background color"
+                        :context="context"
+                        v-model="layer.bgColor"
+                    />
                     <InputTuple label="Position" v-model="layer.position" separator="," :precision="2" />
                     <InputTuple label="Dimension" v-model="layer.dimension" separator="×" :precision="2" />
                     <label>
@@ -118,9 +122,10 @@ const creatingLayer = computed<boolean>(() => {
 
 const context = computed<MaterialContext>(() => {
     const project = props.project;
-    const descriptions = material.value.description;
+    const materialValue = material.value;
+    const descriptions = materialValue.description;
 
-    return createContext(project, descriptions);
+    return createContext(project, descriptions, materialValue, undefined);
 });
 
 watch(layer, () => {
