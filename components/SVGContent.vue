@@ -25,7 +25,11 @@
                     --text-alignment: ${detail.content.alignment}
                 `"
             >
-                <Text :value="value" class="inline-text" :material="material" :content="content" />
+                <Text
+                    :value="value"
+                    class="inline-text"
+                    :context="extendedContext"
+                />
             </div>
         </foreignObject>
     </g>
@@ -125,22 +129,22 @@ const extendedContent = computed< MaterialContent | null | undefined>(() => {
     return extContent;
 });
 
+const extendedContext = computed<MaterialContext>(() => {
+    return {
+        ...props.context,
+        content: extendedContent.value,
+    } as MaterialContext;
+});
+
 const value = computed<string>(() => {
     const contentType = detail.value.content.type;
     const contentValue = detail.value.content.value;
-    const context = props.context ?? {
-        loop: {},
-        project: activeProject.value,
-        material: props.material,
-    };
+    const context = extendedContext.value;
 
     switch (contentType) {
         case 'StaticText': return contentValue;
         case 'StaticImage': return contentValue;
-        case 'Reference': return getRefValue(descRef.value, {
-            ...context,
-            content: extendedContent.value,
-        });
+        case 'Reference': return getRefValue(descRef.value, context);
     }
 
     console.warn('type not managed yet :(', contentType);

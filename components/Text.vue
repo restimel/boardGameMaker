@@ -26,8 +26,7 @@ type MDContent = {
 
 type Props = {
     value?: string;
-    material?: Material;
-    content?: MaterialContent | null;
+    context?: MaterialContext;
 };
 
 const props = defineProps<Props>();
@@ -126,11 +125,12 @@ const text = computed(() => {
     return value ?? '';
 });
 
-const refOptions = computed<RefOptions>(() => {
-    return {
-        material: props.material,
-        content: props.content,
-    };
+const refOptions = computed<MaterialContext>(() => {
+    const context = props.context ?? createContext(
+        activeProject.value,
+    );
+
+    return context;
 });
 
 const aliases = computed(() => {

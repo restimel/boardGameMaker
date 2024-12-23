@@ -2,8 +2,7 @@
     <TextEditor v-if="type === 'text'"
         v-model="value"
         :placeholder="getRefValue(props.description, ctx)"
-        :material="material"
-        :content="content"
+        :context="context"
         noPreview
         @change="change"
     />
