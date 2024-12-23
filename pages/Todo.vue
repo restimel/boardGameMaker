@@ -39,7 +39,7 @@ const value = `
 ## :exclamation: less important features
 
 * [ ] comments in project
-* [ ] clean up Formats
+* [x] clean up Formats
 * [ ] draw shape circle
 * [x] references: index & total
 * [ ] reference to material
