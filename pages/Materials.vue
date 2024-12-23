@@ -31,7 +31,14 @@
                         {{ material.type }}
                     </td>
                     <td>
-                        {{ material.contents.length }}
+                        <span title="number of described items">
+                            {{ material.contents.length }}
+                        </span>
+                        <span
+                            title="The real number of item to print"
+                        >
+                            ({{ numberMaterial(material) }})
+                        </span>
                     </td>
                     <td class="cell-actions">
                         <button @click.stop="navigateTo(`/material/${material.name}/configuration`)">

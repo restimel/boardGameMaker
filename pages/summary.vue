@@ -54,13 +54,6 @@
 </template>
 <script setup lang="ts">
 
-function numberMaterial(material: Material): number {
-    const length = material.contents.length;
-    const allContexts = createAllContext(activeProject.value, material).length;
-
-    return length * allContexts;
-}
-
 </script>
 <style scoped>
 .material-name {

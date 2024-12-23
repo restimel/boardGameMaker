@@ -321,3 +321,10 @@ export function createProject(name: string): GameProject {
 
     return project;
 }
+
+export function numberMaterial(material: Material): number {
+    const length = material.contents.length;
+    const allContexts = createAllContext(activeProject.value, material).length;
+
+    return length * allContexts;
+}
