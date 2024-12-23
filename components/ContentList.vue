@@ -130,10 +130,9 @@ const exportOptions = computed(() => {
 const context = computed<MaterialContext>(() => {
     const project = props.project;
     const material = props.material;
-    const descriptions = material.description;
     const content = selectedContent.value;
 
-    return createContext(project, descriptions, material, content);
+    return createContext(project, material, content);
 });
 
 function addContent(propertyName: string, value: ContentValue) {

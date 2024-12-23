@@ -223,9 +223,10 @@ export function getLoopAttributes(descriptions: MaterialDescriptions): MaterialD
     return attributes;
 }
 
-export function createContext(project: Project, descriptions: MaterialDescriptions, material?: Material, content?: MaterialContent | null): MaterialContext {
+export function createContext(project: Project, material?: Material, content?: MaterialContent | null): MaterialContext {
     const loop: Record<string, string> = {};
     const enumerations = project.enumerations;
+    const descriptions = material?.description ?? {};
 
     getLoopAttributes(descriptions).forEach((attribute) => {
         const enumId = extractEnumLoopId(attribute.type);

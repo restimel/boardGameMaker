@@ -18,9 +18,8 @@ const material: Ref<MaterialDice> = defineModel<MaterialDice>() as any;
 const context = computed<MaterialContext>(() => {
     const project = activeProject.value;
     const materialValue = material.value;
-    const descriptions = materialValue.description;
 
-    return createContext(project, descriptions, materialValue, undefined);
+    return createContext(project, materialValue, undefined);
 });
 
 function initialization() {

@@ -63,10 +63,9 @@ const value = ref<ContentValue>(undefined);
 const context = computed<MaterialContext>(() => {
     const project = activeProject.value;
     const materialValue = props.material;
-    const descriptions: MaterialDescriptions = materialValue?.description ?? {};
     const content = props.content;
 
-    return createContext(project, descriptions, materialValue, content);
+    return createContext(project, materialValue, content);
 });
 
 const type = computed<DescriptionType>(() => {

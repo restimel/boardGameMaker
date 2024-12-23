@@ -123,9 +123,8 @@ const creatingLayer = computed<boolean>(() => {
 const context = computed<MaterialContext>(() => {
     const project = props.project;
     const materialValue = material.value;
-    const descriptions = materialValue.description;
 
-    return createContext(project, descriptions, materialValue, undefined);
+    return createContext(project, materialValue, undefined);
 });
 
 watch(layer, () => {

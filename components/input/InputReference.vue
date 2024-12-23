@@ -90,9 +90,8 @@ const uid = Math.random();
 const context = computed<MaterialContext>(() => {
     const project = activeProject.value;
     const materialValue = props.materials;
-    const descriptions = materialValue.description;
 
-    return createContext(project, descriptions, materialValue, undefined);
+    return createContext(project, materialValue, undefined);
 });
 
 const referenceList = computed<MaterialDescription[]>(() => {
