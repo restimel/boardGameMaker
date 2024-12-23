@@ -28,7 +28,7 @@
             </label>
         </label>
         <InputColor
-            label="Color"
+            label="Background color"
             :context="context"
             v-model="material.backgroundColor"
         />

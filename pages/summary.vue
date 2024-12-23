@@ -27,7 +27,7 @@
         <ul>
             <li v-for="material of activeProject.materials"
             >
-                <NuxtLink :to="`/material/${material.name}/print`">
+                <NuxtLink :to="`/material/${material.name}/print`" target="_blank">
                     <span class="material-name">
                         {{ material.name }}
                     </span>:

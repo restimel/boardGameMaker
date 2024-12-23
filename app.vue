@@ -47,6 +47,7 @@
         margin: 0;
         padding: 0;
         color: var(--text-color);
+        overflow: hidden;
     }
 
     dialog {

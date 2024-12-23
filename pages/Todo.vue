@@ -26,7 +26,7 @@ const value = `
 ### Print
 
 * [ ] layer for print (without header)
-    * [ ] assert material is displayed entirely in a page
+    * [x] assert material is displayed entirely in a page
     * [ ] _(minor)_ option to choose to display back (or not) of cards
     * [ ] _(minor)_ possibility to print all
 
@@ -54,7 +54,7 @@ const value = `
 ## :bug: Bugs
 
 * [x] when refreshing the active project is the first instead of the previous one
-* [ ] hydratation (be nuxt ready)
+* [x] hydratation (be nuxt ready)
     * [ ] explore different storage system
 * [x] at start isChanged is false but buttons are enabled
 * [ ] allow to have empty default text value

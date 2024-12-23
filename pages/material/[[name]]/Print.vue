@@ -26,6 +26,10 @@ type Content = {
     context: MaterialContext;
 };
 
+definePageMeta({
+    layout: 'print',
+});
+
 const route = useRoute();
 const name: string = route.params.name as unknown as string;
 

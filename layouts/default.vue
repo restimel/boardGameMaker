@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="app">
         <header>
             <nav>
                 <NuxtLink v-for="menuItem of menuList"
@@ -12,31 +12,7 @@
                     {{ menuItem.title }}
                 </NuxtLink>
             </nav>
-            <menu>
-                <ClientOnly>
-                    <button
-                        class="default-button"
-                        :disabled="disabledButton"
-                        @click="save('major')"
-                    >
-                        Save major
-                    </button>
-                    <button
-                        class="default-button"
-                        :disabled="disabledButton"
-                        @click="save('minor')"
-                    >
-                        Save minor
-                    </button>
-                    <button
-                        class="main-button"
-                        :disabled="disabledButton"
-                        @click="save('build')"
-                    >
-                        Save
-                    </button>
-                </ClientOnly>
-            </menu>
+            <MenuHeader />
         </header>
         <main class="page">
             <ClientOnly>
@@ -57,10 +33,6 @@
 <script setup lang="ts">
 
 const route = useRoute();
-
-const disabledButton = computed(() => {
-    return !projectIsChanged.value;
-});
 
 const menuList = computed(() => {
     return [{
@@ -103,20 +75,14 @@ const menuList = computed(() => {
     }];
 });
 
-function save(mode: BuildMode) {
-    if (disabledButton.value) {
-        return;
-    }
-
-    saveProject(mode);
-}
-
 </script>
 <style scoped>
-    section {
-        height: 100%;
+    .app {
+        height: 100vh;
         overflow: hidden;
         margin: 0;
+        display: grid;
+        grid-template-rows: max-content 1fr;
     }
 
     header {
@@ -127,13 +93,6 @@ function save(mode: BuildMode) {
         display: flex;
         flex-direction: row;
         justify-content: space-between
-    }
-
-    menu {
-        display: inline-flex;
-        margin: 0;
-        margin-inline-end: 15px;
-        padding: 0;
     }
 
     nav {
@@ -159,5 +118,6 @@ function save(mode: BuildMode) {
 
     .page {
         padding: 10px;
+        overflow: auto;
     }
 </style>
