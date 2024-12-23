@@ -36,7 +36,7 @@ function buildRefContent(value: string, options: RefOptions): [MaterialDescripti
 
 /* Regular expression to match `:ref<value>:` */
 const refPattern = /:ref<\s*([^:]+)\s*>:/gi;
-export function replaceRef(value: string, options: RefOptions, insideToken = false) {
+export function replaceRef(value: string, options: Partial<MaterialContext>, insideToken = false) {
     const str = insideToken ? `:${value}:` : value;
     const result = str.replace(refPattern, (_pattern, value) => {
         const [ref, content] = buildRefContent(value, options);
@@ -52,9 +52,13 @@ export function replaceRef(value: string, options: RefOptions, insideToken = fal
             list.add(name);
         }
 
-        return getRefValue(ref, {
+        const defaultValue = {
             loop: {},
             project: activeProject.value,
+        };
+
+        return getRefValue(ref, {
+            ...defaultValue,
             ...options,
             list,
         });
@@ -73,12 +77,13 @@ export function replaceRef(value: string, options: RefOptions, insideToken = fal
 
 /* Regular expression to match `:enum<name, key>:` */
 const enumPattern = /:enum<\s*([^:,]+)\s*,\s*([^:]+)\s*>:/gi;
-export function replaceEnum(str: string, options: RefOptions) {
+export function replaceEnum(str: string, context: MaterialContext) {
     return str.replace(enumPattern, (_pattern, name, value) => {
-        const enumName = replaceRef(name, options, true);
-        const val = replaceRef(value, options, true);
-        const enumRef = getEnum(activeProject.value.enumerations, enumName);
+        const enumName = replaceRef(name, context, true);
+        const val = replaceRef(value, context, true);
+        const enumRef = getEnum(activeProject.value.enumerations, enumName, 'id')
+            ?? getEnum(activeProject.value.enumerations, enumName, 'name');
 
-        return getEnumValue(enumRef, val);
+        return getEnumValue(enumRef, val, context);
     });
 }

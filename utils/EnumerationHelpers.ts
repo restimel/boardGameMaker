@@ -3,7 +3,7 @@ export function getEnum(enumerations: Enumeration[], name: string, prop: 'id' | 
     return enumerations.find((enumeration) => enumeration[prop] === name) ?? null;
 }
 
-export function getEnumValue(enumeration: Enumeration | null, key: string): string {
+export function getEnumValue(enumeration: Enumeration | null, key: string, context: MaterialContext): string {
     if (!enumeration) {
         return '⚠️<no enumeration>';
     }
@@ -18,10 +18,10 @@ export function getEnumValue(enumeration: Enumeration | null, key: string): stri
             return getDefaultValue(type, `${enumeration.name}, ${key}`);
         }
 
-        return formatValue(defaultValue, type);
+        return formatValue(defaultValue, type, context);
     }
 
-    return formatValue(enumKeyValue.value, type);
+    return formatValue(enumKeyValue.value, type, context);
 }
 
 export function isEnum(type: DescriptionType): boolean {

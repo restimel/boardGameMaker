@@ -1,7 +1,7 @@
 <template>
     <TextEditor v-if="type === 'text'"
         v-model="value"
-        :placeholder="getRefValue(props.description, ctx)"
+        :placeholder="getRefValue(props.description, context)"
         :context="context"
         noPreview
         @change="change"
@@ -9,7 +9,7 @@
     <input v-else-if="type === 'number'"
         type="number"
         v-model="value"
-        :placeholder="getRefValue(props.description, ctx)"
+        :placeholder="getRefValue(props.description, context)"
         @change="change"
     />
     <InputImage v-else-if="type === 'image'"
@@ -40,7 +40,7 @@
     <input v-else
         type="text"
         v-model="value"
-        :placeholder="getRefValue(props.description, ctx)"
+        :placeholder="getRefValue(props.description, context)"
     />
 </template>
 <script setup lang="ts">
@@ -69,15 +69,6 @@ const context = computed<MaterialContext>(() => {
 
 const type = computed<DescriptionType>(() => {
     return props.description.type;
-});
-
-const ctx = computed<MaterialContext>(() => {
-    return {
-        loop: {},
-        project: activeProject.value,
-        material: props.material,
-        content: props.content,
-    };
 });
 
 const enumId = computed<string>(() => {

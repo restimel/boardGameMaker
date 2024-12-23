@@ -8,7 +8,7 @@
             :y="detail.position[1] * px"
             :width="detail.dimension[0] * px"
             :height="detail.dimension[1] * px"
-            :fill="getColor(detail.bgColor, refOptions)"
+            :fill="getColor(detail.bgColor, extendedContext)"
         />
 
         <foreignObject v-if="type === 'Text'"
@@ -21,7 +21,7 @@
                 class="text-svg"
                 :style="`
                     --text-size: ${detail.content.size * px}px;
-                    --text-color: ${getColor(detail.content.color, refOptions)};
+                    --text-color: ${getColor(detail.content.color, extendedContext)};
                     --text-alignment: ${detail.content.alignment}
                 `"
             >
@@ -42,7 +42,7 @@
             :y="detail.position[1] * px"
             :width="detail.dimension[0] * px"
             :height="detail.dimension[1] * px"
-            :fill="getColor(detail.bgColor, refOptions)"
+            :fill="getColor(detail.bgColor, extendedContext)"
         />
         <image
             :x="detail.position[0] * px"
@@ -68,13 +68,6 @@ const props = defineProps<Props>();
 
 const detail = computed(() => {
     return props.value;
-});
-
-const refOptions = computed<RefOptions>(() => {
-    return {
-        material: props.material,
-        content: props.content,
-    };
 });
 
 const imageAlign = computed(() => {
@@ -114,15 +107,18 @@ const type = computed(() => {
 });
 
 const extendedContent = computed< MaterialContent | null | undefined>(() => {
-    const content = props.content;
+    const context = props.context;
+    const content = props.content ?? context?.content;
 
     if (!content) {
         return content;
     }
 
+    const contents = context?.material?.contents;
+
     const extContent = {
-        index: props.material.contents.indexOf(content) + 1,
-        total: props.material.contents.length,
+        index: (contents?.indexOf(content) ?? 0) + 1,
+        total: (contents?.length ?? 0),
         ... content,
     };
 
@@ -158,7 +154,7 @@ const descRef = computed<MaterialDescription | null>(() => {
     }
 
     const contentValue = detail.value.content.value;
-    const description = props.material.description;
+    const description = props.context?.material?.description ?? props.material.description;
 
     const reference = description[contentValue];
 

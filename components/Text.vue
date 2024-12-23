@@ -125,10 +125,14 @@ const text = computed(() => {
     return value ?? '';
 });
 
-const refOptions = computed<MaterialContext>(() => {
-    const context = props.context ?? createContext(
-        activeProject.value,
-    );
+const refOptions = computed<MaterialContext | undefined>(() => {
+    let context = props.context;
+
+    if (!context && activeProject.value) {
+        context = createContext(
+            activeProject.value,
+        );
+    }
 
     return context;
 });
@@ -189,7 +193,7 @@ watch(aliases, () => {
 function enumValuePlugin(md: MarkdownIt) {
     md.renderer.rules.text = (tokens: MDContent[], idx: number) => {
         /* XXX: option should be read inside the function otherwise it is not reactive */
-        const option = refOptions.value;
+        const option = refOptions.value ?? {};
         let patternContent = tokens[idx].content;
 
         patternContent = replaceRef(patternContent, option);

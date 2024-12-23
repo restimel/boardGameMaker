@@ -86,7 +86,7 @@ export function getDefaultTextSize(rect?: Rectangle): number {
     return 4;
 }
 
-export function getColor(color: Color, options: RefOptions): string {
+export function getColor(color: Color, options: MaterialContext): string {
     let refColor = color.trim();
 
     if (!refColor.startsWith(':')) {
@@ -99,7 +99,7 @@ export function getColor(color: Color, options: RefOptions): string {
     return refColor;
 }
 
-export function formatValue(value: ContentValue, type: DescriptionType, refOptions: RefOptions = {}): string {
+export function formatValue(value: ContentValue, type: DescriptionType, context: MaterialContext): string {
     switch (type) {
         case 'image': {
             if (typeof value === 'string') {
@@ -137,7 +137,7 @@ export function formatValue(value: ContentValue, type: DescriptionType, refOptio
 
         case 'color': {
             if (typeof value === 'string') {
-                return getColor(value, refOptions);
+                return getColor(value, context);
             }
 
             return '';
@@ -171,10 +171,12 @@ export function getRefValue(ref?: MaterialDescription | null, ctx?: MaterialCont
 
     const content = ctx?.content;
 
-    const options: RefOptions = {
+    const options: MaterialContext = {
         material: ctx?.material,
         content: content,
         list: ctx?.list,
+        project: ctx?.project ?? activeProject.value,
+        loop: ctx?.loop ?? {},
     };
 
     if (isEnumLoop(type)) {
@@ -193,7 +195,7 @@ export function getRefValue(ref?: MaterialDescription | null, ctx?: MaterialCont
             return `<⚠️ unknown key ${enumId}>`;
         }
 
-        const value = getEnumValue(enumeration, enumKey);
+        const value = getEnumValue(enumeration, enumKey, ctx);
         return formatValue(value, enumType ?? type, options);
     }
 
