@@ -42,9 +42,15 @@
             Nb of players: <Text class="inline-text" :value="playersInfo" />
         </p>
 
+        <button
+            class="default-button"
+            @click="navigateTo('/prints')"
+        >
+            Prints
+        </button>
+
         <hr>
         <h2>Managements</h2>
-
         <ImportFile
             file-type="JSON"
             :export-options="{

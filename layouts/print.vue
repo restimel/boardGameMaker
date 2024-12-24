@@ -17,6 +17,15 @@
     </section>
 </template>
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted } from 'vue';
+
+onMounted(() => {
+    document.body.classList.add('print');
+});
+
+onBeforeUnmount(() => {
+    document.body.classList.remove('print');
+});
 
 </script>
 <style scoped>
@@ -30,6 +39,14 @@
     }
 </style>
 <style>
+body.print {
+    margin: 0;
+    padding: 0;
+    width: 210mm;
+    height: 297mm;
+    overflow: auto;
+}
+
 @media print {
     @page {
         size: A4;

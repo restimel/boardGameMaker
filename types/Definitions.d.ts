@@ -23,3 +23,8 @@ type RotationRectangle = [number, number, number, number, number];
 type BuildMode = 'new' | 'same' | 'major' | 'minor' | 'build';
 
 type Color = string;
+
+type Item<T = string> = {
+    id: T;
+    text: string;
+};

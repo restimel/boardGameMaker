@@ -42,11 +42,6 @@ type Props = {
     context: MaterialContext;
 };
 
-type Item = {
-    id: string;
-    text: string;
-};
-
 const props = defineProps<Props>();
 const colorModel = defineModel<ContentValue>();
 const emit = defineEmits<{

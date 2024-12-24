@@ -25,10 +25,12 @@ const value = `
 
 ### Print
 
-* [ ] layer for print (without header)
+* [x] layer for print (without header)
     * [x] assert material is displayed entirely in a page
-    * [ ] _(minor)_ option to choose to display back (or not) of cards
-    * [ ] _(minor)_ possibility to print all
+    * [x] option to choose to display back (or not) of cards
+        * [ ] display back (or not) of cards (depending on options)
+    * [x] possibility to print all
+    * [ ] possibility to print rules/summary
 
 ### Material
 
@@ -44,8 +46,6 @@ const value = `
 * [x] references: index & total
 * [ ] reference to material
 * [ ] Do a save with Nuxt
-* [ ] print all
-    * [ ] print back + front
 * [ ] material: board
 * [ ] check when removing an item it is not used (for example attributes used in description)
 * [ ] remove existing layer
