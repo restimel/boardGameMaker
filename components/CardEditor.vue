@@ -47,6 +47,12 @@
                         </label>
                         <span class="actions">
                             <button
+                                title="Duplicate this layer"
+                                @click="duplicate(index)"
+                            >
+                                📄
+                            </button>
+                            <button
                                 :disabled="index === 0"
                                 @click="moveBack(index)"
                             >
@@ -57,6 +63,11 @@
                                 @click="moveFront(index)"
                             >
                                 ↓
+                            </button>
+                            <button
+                                @click="remove(index)"
+                            >
+                                ✕
                             </button>
                         </span>
                     </div>
@@ -192,6 +203,21 @@ function endRectangle(rect: RotationRectangle) {
     }
 }
 
+function duplicate(index: number) {
+    const list = details.value;
+
+    const copyItem = copyValue(list[index]);
+    copyItem.name = `${copyItem.name} (copy)`;
+    copyItem.id = `copy of ${copyItem.id}`;
+
+    while (list.some((item) => item.id === copyItem.id)) {
+        copyItem.id = `${copyItem.id}_`;
+    }
+
+    list.splice(index + 1, 0, copyItem);
+    layerActive.value = copyItem.id;
+}
+
 function moveFront(index: number) {
     const list = details.value;
 
@@ -206,6 +232,12 @@ function moveBack(index: number) {
     const item = list.splice(index, 1)[0];
 
     list.splice(index - 1, 0, item);
+}
+
+function remove(index: number) {
+    const list = details.value;
+
+    list.splice(index, 1);
 }
 
 </script>

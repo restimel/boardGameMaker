@@ -37,6 +37,7 @@ const value = `
 * [x] allow to use reference in color
 * [x] allow to repeat materials contents looping on enum
 * [x] import/export csv
+* [x] duplicate layer
 
 ## :exclamation: less important features
 
@@ -61,6 +62,7 @@ const value = `
 
 * [ ] change dimension with rotation
 * [X] rotation when height is less than 100
+* [ ] cannot generates cards when all columns are loops
 
 * [ ] table: clicking on "+" should create item
 `;
