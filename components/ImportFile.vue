@@ -17,12 +17,14 @@
         }"
         @dragover.prevent="handleDragOver"
         @dragleave="handleDragLeave"
-        @drop.prevent="handleDrop"
+        @drop.stop.prevent="handleDrop"
     >
         <input
             type="file"
             :accept="acceptMIME"
-            @change="handleFileSelect"
+            class="input-import-csv"
+            @change.stop.prevent="handleFileSelect"
+            ref="importFileInput"
         />
 
         <div v-if="isDragOver" class="drag-over-message">Drop file here</div>
@@ -177,8 +179,7 @@ function importFile(file: File) {
     cursor: pointer;
 }
 
-.file-import input[type="file"] {
-    position: absolute;
+.input-import-csv {
     width: 1px;
     height: 1px;
     padding: 0;

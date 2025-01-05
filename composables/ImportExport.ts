@@ -44,6 +44,12 @@ export function importFromCSV(text: string): object[] | string {
             const rowValue = parseCSVrow(row);
 
             if (rowValue.length !== header.length) {
+                if (rowValue.length === 0
+                    || (rowValue.length === 1 && !rowValue[0])
+                ) {
+                    return undefined;
+                }
+
                 throw new Error('All rows have not the same length');
             }
 
@@ -56,7 +62,7 @@ export function importFromCSV(text: string): object[] | string {
             }, {});
 
             return value;
-        });
+        }).filter((row) => row !== undefined) as object[];
 
         return values;
     } catch (err) {
@@ -98,18 +104,62 @@ function convertToJSON(data: object): string {
     return JSON.stringify(data, undefined, '  ');
 }
 
-function parseCSVrow(row: string): Array<string | number> {
-    const values = row.split(/("(?:\\.|[^\\"]+)*?"|[^";,]*?)[;,]/g);
+function modifyStr(str: string, index: number, value: string): string {
+    return str.slice(0, index) + value + str.slice(index + 1);
+}
+
+function parseCSVrow(row: string, splitChar = ';'): Array<string | number> {
+    let index = -1;
+    let modifiedRow = row;
+    let strLength = modifiedRow.length;
+    let isInQuote = false;
+    const STRING_QUOTE = '"';
+    const SPLIT_CHAR = splitChar || ';';
+    const SPLIT_NEWCHAR = '\0';
+
+    while(++index < strLength) {
+        const char = modifiedRow[index];
+
+        switch (char) {
+            case STRING_QUOTE:
+                /* Remove this character */
+                modifiedRow = modifyStr(modifiedRow, index, '');
+                if (isInQuote) {
+                    /* Check next character, if it is a " it means it should display it,
+                     * so we skip it. */
+                    if (modifiedRow[index] !== STRING_QUOTE) {
+                        index--;
+                        strLength--;
+                        isInQuote = false;
+                    }
+                } else {
+                    index--;
+                    strLength--;
+                    isInQuote = true;
+                }
+                break;
+            case SPLIT_CHAR:
+                if (!isInQuote) {
+                    modifiedRow = modifyStr(modifiedRow, index, SPLIT_NEWCHAR);
+                }
+                break;
+            case SPLIT_NEWCHAR:
+                console.warn('The character "%s" is inside the file, it will create some issues.', SPLIT_NEWCHAR);
+                break;
+        }
+    }
+
+    const values = modifiedRow.split(SPLIT_NEWCHAR);
 
     return values.map((value) => {
         if (!value) {
             return '';
         }
 
-        if (!value.startsWith('"') && !/^[-+\d.]+/.test(value)) {
-            return value;
+        if (/^[-+\d.]+$/.test(value)) {
+            return parseFloat(value);
         }
 
-        return JSON.parse(value);
+        return value;
     });
 }
